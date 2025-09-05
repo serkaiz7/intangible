@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intangible Showroom</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="background-shapes"></div>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <nav class="navbar">
+        <button id="create-button" class="nav-button">Create</button>
+    </nav>
+
+    <div class="showroom-container">
+        <h1 class="title">Intangible</h1>
+        <div class="monitor">
+            <div class="monitor-screen">
+                <div class="slide active">
+                    <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1945&q=80" alt="Digital Art 1">
+                </div>
+                <div class="slide">
+                    <img src="https://images.unsplash.com/photo-1557682250-33bd709cbe85?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Digital Art 2">
+                </div>
+                <div class="slide">
+                     <video src="https://assets.mixkit.co/videos/preview/mixkit-abstract-globe-of-light-and-shadow-42732-large.mp4" autoplay muted loop></video>
+                </div>
+            </div>
+            <div class="monitor-stand"></div>
+        </div>
+    </div>
+    
+    <div id="security-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>Enter Serial Key</h2>
+            <p>Access for 1 month is required.</p>
+            <input type="text" id="serial-key-input" placeholder="XXXX-XXXX-XXXX-XXXX">
+            <button id="submit-key-button">Grant Access</button>
+            <p id="modal-message"></p>
+            <div class="ask-keys">
+                <span>👈</span>
+                <a href="https://t.me/+Y0XeXBuEKrdhNjBl" target="_blank" rel="noopener noreferrer">Ask For Keys</a>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="script.js"></script>
+</body>
+</html>
