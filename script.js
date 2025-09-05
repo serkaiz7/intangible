@@ -92,6 +92,17 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // NEW: Get the list of already used keys from localStorage
+        const usedKeys = JSON.parse(localStorage.getItem('usedKeys')) || [];
+
+        // NEW: Check if the key has already been used
+        if (usedKeys.includes(enteredKey)) {
+            modalMessage.textContent = 'This key has already been used.';
+            modalMessage.style.color = '#dc3545';
+            serialKeyInput.value = '';
+            return;
+        }
+
         try {
             const response = await fetch('keys.txt');
             if (!response.ok) {
@@ -101,13 +112,20 @@ document.addEventListener('DOMContentLoaded', function() {
             const validKeys = text.split('\n').map(key => key.trim().toUpperCase()).filter(Boolean);
 
             if (validKeys.includes(enteredKey)) {
+                // Key is valid and not used, so grant access
                 const oneMonthFromNow = Date.now() + (30 * 24 * 60 * 60 * 1000);
                 localStorage.setItem('accessGrantedUntil', oneMonthFromNow.toString());
+                
+                // NEW: Add the key to the used list and save it
+                usedKeys.push(enteredKey);
+                localStorage.setItem('usedKeys', JSON.stringify(usedKeys));
+
                 modalMessage.textContent = 'Access Granted! Redirecting...';
                 modalMessage.style.color = '#28a745';
                 setTimeout(() => {
                     window.location.href = 'Intangible.html';
                 }, 1500);
+
             } else {
                 modalMessage.textContent = 'Invalid Serial Key. Access Denied.';
                 modalMessage.style.color = '#dc3545';
