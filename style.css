@@ -1,6 +1,323 @@
-/* --- Append this to your existing style.css file --- */
+/* Import a futuristic font */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
 
-/* Security Modal Styles */
+:root {
+    --primary-glow: #00f2ff;
+    --secondary-glow: #ff00c1;
+    --background-dark: #02001a;
+    --text-color: #ffffff;
+    --monitor-frame: #1a1a2e;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--background-dark);
+    font-family: 'Orbitron', sans-serif;
+    color: var(--text-color);
+    overflow: hidden;
+    cursor: none;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* --- Awesome Background Effects --- */
+.background-shapes {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, var(--background-dark) 0%, #16223b 100%);
+    z-index: -2;
+}
+
+.background-shapes::after {
+    content: '';
+    position: absolute;
+    width: 300%;
+    height: 300%;
+    top: -100%;
+    left: -100%;
+    background:
+        radial-gradient(circle at 20% 20%, var(--primary-glow) 0%, transparent 15%),
+        radial-gradient(circle at 80% 70%, var(--secondary-glow) 0%, transparent 15%);
+    filter: blur(120px);
+    opacity: 0.4;
+    animation: move-glow 20s linear infinite alternate;
+}
+
+@keyframes move-glow {
+    from { transform: rotate(0deg) scale(1); }
+    to { transform: rotate(360deg) scale(1.2); }
+}
+
+.grid-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        linear-gradient(var(--primary-glow) 1px, transparent 1px),
+        linear-gradient(90deg, var(--primary-glow) 1px, transparent 1px);
+    background-size: 50px 50px;
+    opacity: 0.1;
+    z-index: -1;
+    animation: move-grid 30s linear infinite;
+}
+
+@keyframes move-grid {
+    from { background-position: 0 0; }
+    to { background-position: 50px 100px; }
+}
+
+/* --- Custom Cursor --- */
+.cursor-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--primary-glow);
+    position: fixed;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.cursor-outline {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--primary-glow);
+    position: fixed;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: all 0.2s ease-out;
+}
+
+body:has(a:hover, button:hover) .cursor-outline {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0.5;
+    background-color: var(--primary-glow);
+}
+
+/* --- Navigation Bar & Glitch Button --- */
+.navbar {
+    position: fixed;
+    top: 30px;
+    right: 40px;
+    z-index: 100;
+}
+
+.nav-button {
+    text-decoration: none;
+    color: var(--text-color);
+    background: transparent;
+    border: 2px solid var(--primary-glow);
+    padding: 12px 28px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px 0 var(--primary-glow);
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+}
+
+.nav-button:hover {
+    background-color: var(--primary-glow);
+    color: var(--background-dark);
+    box-shadow: 0 0 25px 0 var(--primary-glow);
+}
+
+/* Glitch hover effect */
+.nav-button::before, .nav-button::after {
+    content: 'Create';
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 12px 28px;
+    background: var(--background-dark);
+    width: 100%;
+    height: 100%;
+    color: var(--primary-glow);
+    transform: translateX(0);
+    opacity: 0;
+}
+
+.nav-button:hover::before {
+    opacity: 1;
+    animation: glitch-left 0.3s infinite;
+}
+
+.nav-button:hover::after {
+    opacity: 1;
+    animation: glitch-right 0.3s infinite;
+}
+
+@keyframes glitch-left {
+    0%, 100% { clip-path: inset(0 50% 0 0); transform: translateX(-5%); }
+    25% { clip-path: inset(50% 50% 0 0); }
+    50% { clip-path: inset(50% 50% 50% 0); }
+    75% { clip-path: inset(0 50% 50% 0); }
+}
+
+@keyframes glitch-right {
+    0%, 100% { clip-path: inset(0 0 0 50%); transform: translateX(5%); }
+    25% { clip-path: inset(0 0 50% 50%); }
+    50% { clip-path: inset(50% 0 50% 50%); }
+    75% { clip-path: inset(50% 0 0 50%); }
+}
+
+/* --- Showroom & Monitor --- */
+.showroom-container {
+    text-align: center;
+    position: relative;
+    width: 90%;
+    max-width: 1000px;
+}
+
+/* --- Awesome Glitch Title --- */
+.title {
+    font-size: 7rem;
+    font-weight: 900;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    position: relative;
+    color: var(--text-color);
+    text-shadow: 0 0 10px var(--primary-glow);
+}
+
+.title::before, .title::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--background-dark);
+    overflow: hidden;
+}
+
+.title::before {
+    color: var(--primary-glow);
+    animation: glitch 2s infinite linear alternate-reverse;
+}
+
+.title::after {
+    color: var(--secondary-glow);
+    animation: glitch 3s infinite linear alternate-reverse;
+}
+
+@keyframes glitch {
+    0% { clip-path: inset(45% 0 50% 0); }
+    5% { clip-path: inset(65% 0 10% 0); }
+    10% { clip-path: inset(25% 0 60% 0); }
+    15% { clip-path: inset(80% 0 5% 0); }
+    20% { clip-path: inset(15% 0 70% 0); }
+    /* ... add more steps for complexity if desired */
+    100% { clip-path: inset(45% 0 50% 0); }
+}
+
+/* Interactive Monitor */
+.monitor {
+    perspective: 2000px; /* Increased perspective for more depth */
+    transition: transform 0.1s linear; /* Smooths out JS updates */
+}
+
+.monitor-screen {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background-color: #000;
+    border: 15px solid var(--monitor-frame);
+    border-radius: 15px;
+    box-shadow:
+        inset 0 0 30px rgba(0,0,0,0.8),
+        0 0 20px var(--primary-glow),
+        0 0 40px var(--secondary-glow);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Monitor Scanlines */
+.monitor-screen::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.05) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    animation: scanline 5s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes scanline {
+    from { background-position-y: 0; }
+    to { background-position-y: 100%; }
+}
+
+.monitor-stand {
+    width: 30%;
+    height: 30px;
+    background: var(--monitor-frame);
+    margin: 0 auto;
+    position: relative;
+    z-index: -1;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.monitor-stand::after {
+    content: '';
+    width: 50%;
+    height: 15px;
+    background: #111;
+    position: absolute;
+    bottom: -15px;
+    left: 25%;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+/* --- Slideshow --- */
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.slide.active {
+    opacity: 1;
+}
+
+.slide img, .slide video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+/* --- Security Modal Styles (Unchanged but included for completeness) --- */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -32,90 +349,28 @@
     text-align: center;
     width: 90%;
     max-width: 400px;
-    transform: scale(0.9);
-    transition: transform 0.3s ease-in-out;
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.3s ease-in-out;
 }
 
 .modal-overlay:not(.hidden) .modal-content {
-    transform: scale(1);
+    transform: scale(1) translateY(0);
 }
 
-.modal-content h2 {
-    color: var(--primary-glow);
-    margin-bottom: 10px;
-}
+.modal-content h2 { color: var(--primary-glow); margin-bottom: 10px; }
+.modal-content p { margin-bottom: 20px; opacity: 0.8; }
 
-.modal-content p {
-    margin-bottom: 20px;
-    opacity: 0.8;
-}
+#serial-key-input { width: 100%; padding: 12px; margin-bottom: 20px; background: var(--background-dark); border: 1px solid var(--primary-glow); border-radius: 5px; color: var(--text-color); font-family: 'Orbitron', sans-serif; text-align: center; font-size: 1rem; }
+#serial-key-input:focus { outline: none; box-shadow: 0 0 15px var(--primary-glow); }
 
-#serial-key-input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    background: var(--background-dark);
-    border: 1px solid var(--primary-glow);
-    border-radius: 5px;
-    color: var(--text-color);
-    font-family: 'Orbitron', sans-serif;
-    text-align: center;
-    font-size: 1rem;
-}
+#submit-key-button { width: 100%; padding: 12px; background-color: transparent; border: 2px solid var(--primary-glow); color: var(--text-color); font-family: 'Orbitron', sans-serif; font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s ease; cursor: none; }
+#submit-key-button:hover { background-color: var(--primary-glow); color: var(--background-dark); box-shadow: 0 0 20px var(--primary-glow); }
 
-#serial-key-input:focus {
-    outline: none;
-    box-shadow: 0 0 15px var(--primary-glow);
-}
-
-#submit-key-button {
-    width: 100%;
-    padding: 12px;
-    background-color: transparent;
-    border: 2px solid var(--primary-glow);
-    color: var(--text-color);
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    transition: all 0.3s ease;
-    cursor: none; /* Use the custom cursor */
-}
-
-#submit-key-button:hover {
-    background-color: var(--primary-glow);
-    color: var(--background-dark);
-    box-shadow: 0 0 20px var(--primary-glow);
-}
-
-#modal-message {
-    margin-top: 15px;
-    min-height: 20px;
-    font-weight: bold;
-}
-
-.ask-keys {
-    margin-top: 25px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
-.ask-keys span {
-    font-size: 1.5rem;
-    animation: point-hand 1.5s ease-in-out infinite;
-}
-
-.ask-keys a {
-    color: var(--primary-glow);
-    text-decoration: none;
-    transition: text-shadow 0.3s ease;
-}
-
-.ask-keys a:hover {
-    text-shadow: 0 0 10px var(--primary-glow);
-}
+#modal-message { margin-top: 15px; min-height: 20px; font-weight: bold; }
+.ask-keys { margin-top: 25px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+.ask-keys span { font-size: 1.5rem; animation: point-hand 1.5s ease-in-out infinite; }
+.ask-keys a { color: var(--primary-glow); text-decoration: none; transition: text-shadow 0.3s ease; }
+.ask-keys a:hover { text-shadow: 0 0 10px var(--primary-glow); }
 
 @keyframes point-hand {
     0%, 100% { transform: translateX(0); }
@@ -123,5 +378,6 @@
 }
 
 .hidden {
-    display: none;
+    opacity: 0;
+    pointer-events: none;
 }
