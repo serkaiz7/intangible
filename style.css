@@ -25,6 +25,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 1rem;
 }
 
 /* --- Awesome Background Effects --- */
@@ -46,7 +47,7 @@ body {
     top: -100%;
     left: -100%;
     background:
-        radial-gradient(circle at 20% 20%, var(--primary-glow) 0%, transparent 15%),
+        radial-gradient(circle at 20% 20%, var(--primary-glow) 0%, transparent S15%),
         radial-gradient(circle at 80% 70%, var(--secondary-glow) 0%, transparent 15%);
     filter: blur(120px);
     opacity: 0.4;
@@ -79,111 +80,52 @@ body {
 }
 
 /* --- Custom Cursor --- */
-.cursor-dot {
-    width: 8px;
-    height: 8px;
-    background-color: var(--primary-glow);
-    position: fixed;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
+.cursor-dot, .cursor-outline {
+    display: none; /* Hide on touch devices by default */
 }
 
-.cursor-outline {
-    width: 40px;
-    height: 40px;
-    border: 2px solid var(--primary-glow);
-    position: fixed;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    transition: all 0.2s ease-out;
+@media (pointer: fine) { /* Show only on devices with a fine pointer (like a mouse) */
+    .cursor-dot {
+        display: block;
+        width: 8px;
+        height: 8px;
+        background-color: var(--primary-glow);
+        position: fixed;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+    }
+
+    .cursor-outline {
+        display: block;
+        width: 40px;
+        height: 40px;
+        border: 2px solid var(--primary-glow);
+        position: fixed;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transition: all 0.2s ease-out;
+    }
+
+    body:has(a:hover, button:hover) .cursor-outline {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0.5;
+        background-color: var(--primary-glow);
+    }
 }
 
-body:has(a:hover, button:hover) .cursor-outline {
-    transform: translate(-50%, -50%) scale(1.5);
-    opacity: 0.5;
-    background-color: var(--primary-glow);
-}
-
-/* --- Navigation Bar & Glitch Button --- */
-.navbar {
-    position: fixed;
-    top: 30px;
-    right: 40px;
-    z-index: 100;
-}
-
-.nav-button {
-    text-decoration: none;
-    color: var(--text-color);
-    background: transparent;
-    border: 2px solid var(--primary-glow);
-    padding: 12px 28px;
-    font-size: 1rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 10px 0 var(--primary-glow);
-    position: relative;
-    overflow: hidden;
-    cursor: none;
-}
-
-.nav-button:hover {
-    background-color: var(--primary-glow);
-    color: var(--background-dark);
-    box-shadow: 0 0 25px 0 var(--primary-glow);
-}
-
-/* Glitch hover effect */
-.nav-button::before, .nav-button::after {
-    content: 'Create';
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 12px 28px;
-    background: var(--background-dark);
-    width: 100%;
-    height: 100%;
-    color: var(--primary-glow);
-    transform: translateX(0);
-    opacity: 0;
-}
-
-.nav-button:hover::before {
-    opacity: 1;
-    animation: glitch-left 0.3s infinite;
-}
-
-.nav-button:hover::after {
-    opacity: 1;
-    animation: glitch-right 0.3s infinite;
-}
-
-@keyframes glitch-left {
-    0%, 100% { clip-path: inset(0 50% 0 0); transform: translateX(-5%); }
-    25% { clip-path: inset(50% 50% 0 0); }
-    50% { clip-path: inset(50% 50% 50% 0); }
-    75% { clip-path: inset(0 50% 50% 0); }
-}
-
-@keyframes glitch-right {
-    0%, 100% { clip-path: inset(0 0 0 50%); transform: translateX(5%); }
-    25% { clip-path: inset(0 0 50% 50%); }
-    50% { clip-path: inset(50% 0 50% 50%); }
-    75% { clip-path: inset(50% 0 0 50%); }
-}
-
-/* --- Showroom & Monitor --- */
+/* --- Main container --- */
 .showroom-container {
     text-align: center;
     position: relative;
-    width: 90%;
+    width: 100%;
     max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* --- Awesome Glitch Title --- */
@@ -229,6 +171,7 @@ body:has(a:hover, button:hover) .cursor-outline {
 
 /* Interactive Monitor */
 .monitor {
+    width: 100%;
     perspective: 2000px;
     transition: transform 0.1s linear;
 }
@@ -247,7 +190,6 @@ body:has(a:hover, button:hover) .cursor-outline {
     overflow: hidden;
 }
 
-/* Monitor Scanlines */
 .monitor-screen::after {
     content: '';
     position: absolute;
@@ -315,6 +257,77 @@ body:has(a:hover, button:hover) .cursor-outline {
     object-fit: cover;
 }
 
+/* --- Action Button Below Monitor --- */
+.action-button-container {
+    margin-top: 2.5rem;
+}
+
+.nav-button {
+    text-decoration: none;
+    color: var(--text-color);
+    background: transparent;
+    border: 2px solid var(--primary-glow);
+    padding: 12px 28px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px 0 var(--primary-glow);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer; /* Use pointer for mobile */
+}
+
+.nav-button:hover {
+    background-color: var(--primary-glow);
+    color: var(--background-dark);
+    box-shadow: 0 0 25px 0 var(--primary-glow);
+}
+
+@media (pointer: fine) {
+    .nav-button {
+        cursor: none; /* Restore custom cursor on desktop */
+    }
+    
+    .nav-button::before, .nav-button::after {
+        content: 'Create';
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 12px 28px;
+        background: var(--background-dark);
+        width: 100%;
+        height: 100%;
+        color: var(--primary-glow);
+        transform: translateX(0);
+        opacity: 0;
+    }
+
+    .nav-button:hover::before {
+        opacity: 1;
+        animation: glitch-left 0.3s infinite;
+    }
+
+    .nav-button:hover::after {
+        opacity: 1;
+        animation: glitch-right 0.3s infinite;
+    }
+}
+
+@keyframes glitch-left {
+    0%, 100% { clip-path: inset(0 50% 0 0); transform: translateX(-5%); }
+    25% { clip-path: inset(50% 50% 0 0); }
+    50% { clip-path: inset(50% 50% 50% 0); }
+    75% { clip-path: inset(0 50% 50% 0); }
+}
+
+@keyframes glitch-right {
+    0%, 100% { clip-path: inset(0 0 0 50%); transform: translateX(5%); }
+    25% { clip-path: inset(0 0 50% 50%); }
+    50% { clip-path: inset(50% 0 50% 50%); }
+    75% { clip-path: inset(50% 0 0 50%); }
+}
 
 /* --- Security Modal Styles --- */
 .modal-overlay {
@@ -329,6 +342,7 @@ body:has(a:hover, button:hover) .cursor-outline {
     justify-content: center;
     align-items: center;
     z-index: 10000;
+    padding: 1rem;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.4s ease-in-out;
@@ -346,7 +360,7 @@ body:has(a:hover, button:hover) .cursor-outline {
     border: 1px solid var(--primary-glow);
     box-shadow: 0 0 30px var(--secondary-glow);
     text-align: center;
-    width: 90%;
+    width: 100%;
     max-width: 400px;
     transform: scale(0.9) translateY(20px);
     transition: all 0.3s ease-in-out;
@@ -362,7 +376,7 @@ body:has(a:hover, button:hover) .cursor-outline {
 #serial-key-input { width: 100%; padding: 12px; margin-bottom: 20px; background: var(--background-dark); border: 1px solid var(--primary-glow); border-radius: 5px; color: var(--text-color); font-family: 'Orbitron', sans-serif; text-align: center; font-size: 1rem; }
 #serial-key-input:focus { outline: none; box-shadow: 0 0 15px var(--primary-glow); }
 
-#submit-key-button { width: 100%; padding: 12px; background-color: transparent; border: 2px solid var(--primary-glow); color: var(--text-color); font-family: 'Orbitron', sans-serif; font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s ease; cursor: none; }
+#submit-key-button { width: 100%; padding: 12px; background-color: transparent; border: 2px solid var(--primary-glow); color: var(--text-color); font-family: 'Orbitron', sans-serif; font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s ease; cursor: pointer; }
 #submit-key-button:hover { background-color: var(--primary-glow); color: var(--background-dark); box-shadow: 0 0 20px var(--primary-glow); }
 
 #modal-message { margin-top: 15px; min-height: 20px; font-weight: bold; }
@@ -374,4 +388,40 @@ body:has(a:hover, button:hover) .cursor-outline {
 @keyframes point-hand {
     0%, 100% { transform: translateX(0); }
     50% { transform: translateX(-8px); }
+}
+
+/* =========================================== */
+/* === MOBILE RESPONSIVE STYLES === */
+/* =========================================== */
+@media (max-width: 768px) {
+    body {
+        cursor: auto; /* Show default cursor on mobile */
+        padding: 1rem;
+        align-items: flex-start; /* Align content to the top */
+        overflow-y: auto; /* Allow scrolling on small screens */
+    }
+
+    .title {
+        font-size: 3rem; /* Reduce title size */
+        margin-bottom: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .monitor-screen {
+        border-width: 10px; /* Thinner monitor border */
+        border-radius: 10px;
+    }
+
+    .action-button-container {
+        margin-top: 2rem;
+    }
+
+    .nav-button {
+        padding: 15px 35px; /* Larger button for easier tapping */
+        font-size: 1.1rem;
+    }
+
+    .modal-content {
+        padding: 20px; /* Smaller padding inside modal */
+    }
 }
