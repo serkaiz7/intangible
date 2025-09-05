@@ -224,14 +224,13 @@ body:has(a:hover, button:hover) .cursor-outline {
     10% { clip-path: inset(25% 0 60% 0); }
     15% { clip-path: inset(80% 0 5% 0); }
     20% { clip-path: inset(15% 0 70% 0); }
-    /* ... add more steps for complexity if desired */
     100% { clip-path: inset(45% 0 50% 0); }
 }
 
 /* Interactive Monitor */
 .monitor {
-    perspective: 2000px; /* Increased perspective for more depth */
-    transition: transform 0.1s linear; /* Smooths out JS updates */
+    perspective: 2000px;
+    transition: transform 0.1s linear;
 }
 
 .monitor-screen {
@@ -317,7 +316,7 @@ body:has(a:hover, button:hover) .cursor-outline {
 }
 
 
-/* --- Security Modal Styles (Unchanged but included for completeness) --- */
+/* --- Security Modal Styles --- */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -332,10 +331,10 @@ body:has(a:hover, button:hover) .cursor-outline {
     z-index: 10000;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.4s ease-in-out;
 }
 
-.modal-overlay:not(.hidden) {
+.modal-overlay.visible {
     opacity: 1;
     pointer-events: auto;
 }
@@ -353,7 +352,7 @@ body:has(a:hover, button:hover) .cursor-outline {
     transition: all 0.3s ease-in-out;
 }
 
-.modal-overlay:not(.hidden) .modal-content {
+.modal-overlay.visible .modal-content {
     transform: scale(1) translateY(0);
 }
 
@@ -375,9 +374,4 @@ body:has(a:hover, button:hover) .cursor-outline {
 @keyframes point-hand {
     0%, 100% { transform: translateX(0); }
     50% { transform: translateX(-8px); }
-}
-
-.hidden {
-    opacity: 0;
-    pointer-events: none;
 }
