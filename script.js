@@ -7,43 +7,33 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('mousemove', function(e) {
         const posX = e.clientX;
         const posY = e.clientY;
-
         cursorDot.style.left = `${posX}px`;
         cursorDot.style.top = `${posY}px`;
-
         cursorOutline.animate({
             left: `${posX}px`,
             top: `${posY}px`
         }, { duration: 500, fill: "forwards" });
     });
 
-    // --- NEW: Interactive Monitor Tilt Effect ---
+    // --- Interactive Monitor Tilt Effect ---
     const monitor = document.querySelector('.monitor');
-    const maxTilt = 10; // Max tilt in degrees
+    const maxTilt = 10;
 
     document.addEventListener('mousemove', (e) => {
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2;
-        
-        // Get mouse position relative to center (-1 to 1)
         const mouseX = (e.clientX - centerX) / centerX;
         const mouseY = (e.clientY - centerY) / centerY;
-        
-        // Calculate tilt
         const tiltY = mouseX * maxTilt;
         const tiltX = -mouseY * maxTilt;
-
-        // Apply a smooth transform
         requestAnimationFrame(() => {
             monitor.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
         });
     });
 
-    // Reset tilt when mouse leaves the window
     document.addEventListener('mouseleave', () => {
         monitor.style.transform = `rotateX(0deg) rotateY(0deg)`;
     });
-
 
     // --- Slideshow Logic ---
     const slides = document.querySelectorAll('.slide');
@@ -55,7 +45,6 @@ document.addEventListener('DOMContentLoaded', function() {
         slides[currentSlide].classList.remove('active');
         currentSlide = (currentSlide + 1) % slides.length;
         slides[currentSlide].classList.add('active');
-
         const currentElement = slides[currentSlide].children[0];
         if (currentElement.tagName === 'VIDEO') {
             currentElement.play();
@@ -65,24 +54,33 @@ document.addEventListener('DOMContentLoaded', function() {
        setInterval(nextSlide, slideInterval);
     }
 
-    // --- Security Modal Logic (Unchanged) ---
+    // --- FIXED: Security Modal Logic ---
     const createButton = document.getElementById('create-button');
     const securityModal = document.getElementById('security-modal');
     const submitKeyButton = document.getElementById('submit-key-button');
     const serialKeyInput = document.getElementById('serial-key-input');
     const modalMessage = document.getElementById('modal-message');
 
+    function showModal() {
+        securityModal.classList.add('visible');
+    }
+
+    function hideModal() {
+        securityModal.classList.remove('visible');
+        modalMessage.textContent = ''; // Clear message on close
+    }
+
     createButton.addEventListener('click', () => {
         const accessGrantedUntil = localStorage.getItem('accessGrantedUntil');
         if (accessGrantedUntil && Date.now() < parseInt(accessGrantedUntil)) {
             window.location.href = 'Intangible.html';
         } else {
-            securityModal.classList.remove('hidden');
+            showModal(); // Use the new function
         }
     });
 
     submitKeyButton.addEventListener('click', async () => {
-        const enteredKey = serialKeyInput.value.trim();
+        const enteredKey = serialKeyInput.value.trim().toUpperCase(); // Standardize input
         if (!enteredKey) {
             modalMessage.textContent = 'Please enter a key.';
             modalMessage.style.color = '#ffc107';
@@ -91,9 +89,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             const response = await fetch('keys.txt');
-            if (!response.ok) throw new Error('Could not load keys file.');
+            if (!response.ok) {
+                // This error will show if keys.txt is missing or can't be accessed
+                throw new Error(`Network response was not ok. Status: ${response.status}`);
+            }
             const text = await response.text();
-            const validKeys = text.split('\n').map(key => key.trim()).filter(Boolean);
+            const validKeys = text.split('\n').map(key => key.trim().toUpperCase()).filter(Boolean);
 
             if (validKeys.includes(enteredKey)) {
                 const oneMonthFromNow = Date.now() + (30 * 24 * 60 * 60 * 1000);
@@ -110,15 +111,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (error) {
             console.error('Error validating key:', error);
-            modalMessage.textContent = 'Error: Could not verify key.';
+            // This error will show if the file is blocked by the browser (CORS issue)
+            modalMessage.textContent = 'Error: Cannot verify key. (Is this on a server?)';
             modalMessage.style.color = '#dc3545';
         }
     });
     
     securityModal.addEventListener('click', (e) => {
+        // Close modal if the dark overlay is clicked, but not the content box
         if (e.target === securityModal) {
-            securityModal.classList.add('hidden');
-            modalMessage.textContent = '';
+            hideModal(); // Use the new function
         }
     });
 });
