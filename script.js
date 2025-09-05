@@ -11,13 +11,39 @@ document.addEventListener('DOMContentLoaded', function() {
         cursorDot.style.left = `${posX}px`;
         cursorDot.style.top = `${posY}px`;
 
+        cursorOutline.animate({
+            left: `${posX}px`,
+            top: `${posY}px`
+        }, { duration: 500, fill: "forwards" });
+    });
+
+    // --- NEW: Interactive Monitor Tilt Effect ---
+    const monitor = document.querySelector('.monitor');
+    const maxTilt = 10; // Max tilt in degrees
+
+    document.addEventListener('mousemove', (e) => {
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        
+        // Get mouse position relative to center (-1 to 1)
+        const mouseX = (e.clientX - centerX) / centerX;
+        const mouseY = (e.clientY - centerY) / centerY;
+        
+        // Calculate tilt
+        const tiltY = mouseX * maxTilt;
+        const tiltX = -mouseY * maxTilt;
+
+        // Apply a smooth transform
         requestAnimationFrame(() => {
-            cursorOutline.animate({
-                left: `${posX}px`,
-                top: `${posY}px`
-            }, { duration: 500, fill: 'forwards' });
+            monitor.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
         });
     });
+
+    // Reset tilt when mouse leaves the window
+    document.addEventListener('mouseleave', () => {
+        monitor.style.transform = `rotateX(0deg) rotateY(0deg)`;
+    });
+
 
     // --- Slideshow Logic ---
     const slides = document.querySelectorAll('.slide');
@@ -35,78 +61,64 @@ document.addEventListener('DOMContentLoaded', function() {
             currentElement.play();
         }
     }
-    setInterval(nextSlide, slideInterval);
+    if (slides.length > 1) {
+       setInterval(nextSlide, slideInterval);
+    }
 
-    // --- NEW: Security Modal Logic ---
+    // --- Security Modal Logic (Unchanged) ---
     const createButton = document.getElementById('create-button');
     const securityModal = document.getElementById('security-modal');
     const submitKeyButton = document.getElementById('submit-key-button');
     const serialKeyInput = document.getElementById('serial-key-input');
     const modalMessage = document.getElementById('modal-message');
 
-    // Check if user has access
     createButton.addEventListener('click', () => {
         const accessGrantedUntil = localStorage.getItem('accessGrantedUntil');
-        // Check if an access key exists and is not expired
         if (accessGrantedUntil && Date.now() < parseInt(accessGrantedUntil)) {
-            // If access is valid, go to the page
             window.location.href = 'Intangible.html';
         } else {
-            // Otherwise, show the popup to enter a key
             securityModal.classList.remove('hidden');
         }
     });
 
-    // Handle key submission
     submitKeyButton.addEventListener('click', async () => {
         const enteredKey = serialKeyInput.value.trim();
         if (!enteredKey) {
             modalMessage.textContent = 'Please enter a key.';
-            modalMessage.style.color = '#ffc107'; // Yellow for warning
+            modalMessage.style.color = '#ffc107';
             return;
         }
 
         try {
-            // Fetch the list of valid keys from your text file
             const response = await fetch('keys.txt');
-            if (!response.ok) {
-                throw new Error('Could not load keys file.');
-            }
+            if (!response.ok) throw new Error('Could not load keys file.');
             const text = await response.text();
             const validKeys = text.split('\n').map(key => key.trim()).filter(Boolean);
 
-            // Check if the entered key is in the list
             if (validKeys.includes(enteredKey)) {
-                // Key is valid! Grant access for 1 month (30 days)
                 const oneMonthFromNow = Date.now() + (30 * 24 * 60 * 60 * 1000);
                 localStorage.setItem('accessGrantedUntil', oneMonthFromNow.toString());
-
                 modalMessage.textContent = 'Access Granted! Redirecting...';
-                modalMessage.style.color = '#28a745'; // Green for success
-
-                // Redirect after a short delay
+                modalMessage.style.color = '#28a745';
                 setTimeout(() => {
                     window.location.href = 'Intangible.html';
                 }, 1500);
-
             } else {
-                // Key is invalid
                 modalMessage.textContent = 'Invalid Serial Key. Access Denied.';
-                modalMessage.style.color = '#dc3545'; // Red for error
-                serialKeyInput.value = ''; // Clear the input
+                modalMessage.style.color = '#dc3545';
+                serialKeyInput.value = '';
             }
         } catch (error) {
             console.error('Error validating key:', error);
-            modalMessage.textContent = 'Error: Could not verify key. Please try again later.';
+            modalMessage.textContent = 'Error: Could not verify key.';
             modalMessage.style.color = '#dc3545';
         }
     });
     
-    // Allow closing the modal by clicking the background overlay
     securityModal.addEventListener('click', (e) => {
         if (e.target === securityModal) {
             securityModal.classList.add('hidden');
-            modalMessage.textContent = ''; // Clear any messages
+            modalMessage.textContent = '';
         }
     });
 });
