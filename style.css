@@ -47,7 +47,7 @@ body {
     top: -100%;
     left: -100%;
     background:
-        radial-gradient(circle at 20% 20%, var(--primary-glow) 0%, transparent S15%),
+        radial-gradient(circle at 20% 20%, var(--primary-glow) 0%, transparent 15%),
         radial-gradient(circle at 80% 70%, var(--secondary-glow) 0%, transparent 15%);
     filter: blur(120px);
     opacity: 0.4;
@@ -390,6 +390,35 @@ body {
     50% { transform: translateX(-8px); }
 }
 
+/* --- NEW: Creator Credit --- */
+.creator-credit {
+    position: fixed;
+    bottom: 15px;
+    right: 20px;
+    font-size: 0.8rem;
+    color: var(--primary-glow);
+    opacity: 0.5;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    
+    /* Shimmer animation setup */
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: shimmer 5s infinite linear;
+}
+
+@keyframes shimmer {
+    from {
+        background-position: 200% 0;
+    }
+    to {
+        background-position: -200% 0;
+    }
+}
+
 /* =========================================== */
 /* === MOBILE RESPONSIVE STYLES === */
 /* =========================================== */
@@ -423,5 +452,13 @@ body {
 
     .modal-content {
         padding: 20px; /* Smaller padding inside modal */
+    }
+    
+    .creator-credit {
+        /* Center the credit on mobile */
+        width: 100%;
+        text-align: center;
+        right: 0;
+        bottom: 10px;
     }
 }
