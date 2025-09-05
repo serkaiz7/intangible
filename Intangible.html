@@ -2166,7 +2166,7 @@
                 const loader = document.getElementById('aiImageLoader'); const imageEl = document.getElementById('aiGeneratedImage');
                 const addBtn = document.getElementById('addAiImageToCanvasBtn'); loader.style.display = 'block'; imageEl.style.display = 'none'; addBtn.style.display = 'none';
                 generateImageBtn.disabled = true; generateImageBtn.textContent = "Generating...";
-                const apiKey = ""; const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${apiKey}`;
+                const apiKey = "AIzaSyAStXuhKO8Dc7gJjvvC26unsZyvhCwGf0E"; const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${apiKey}`;
                 const parts = [{ text: prompt }]; if (imageEditBase64) { parts.push({ inlineData: { mimeType: "image/png", data: imageEditBase64 } }); }
                 const payload = { contents: [{ parts: parts }], generationConfig: { responseModalities: ['IMAGE'] }, };
                 try {
@@ -2199,6 +2199,7 @@
     </script>
 </body>
 </html>
+
 
 
 
