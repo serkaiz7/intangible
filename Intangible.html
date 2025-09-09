@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Kai Art Maker - Pro AI</title>
+    <title>Kai Sticker Maker - Pro AI</title>
     <!-- External Libraries -->
     <script src="https://unpkg.com/konva@9.3.14/konva.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -478,15 +478,15 @@
         }
 
         #prompt-generator-content {
-            background: rgba(23, 25, 35, 0.7);
+            background: rgba(23, 25, 35, 0.6);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 16px;
             padding: 20px;
             width: 90vw;
-            max-width: 450px;
-            max-height: 80vh;
+            max-width: 800px; /* Increased max-width for new layout */
+            max-height: 90vh;
             overflow-y: auto;
             position: relative; /* For close button */
         }
@@ -500,18 +500,26 @@
             cursor: pointer;
             transition: color 0.2s;
             color: #94a3b8;
-            z-index: 10;
+            z-index: 1005; /* Ensure it's above bg shapes */
         }
         #close-prompt-generator:hover {
             color: #e2e8f0;
         }
 
-        /* Prompt Generator Specific Styles (from user, scoped) */
-        .prompt-gen-body {
+        /* --- New Prompt Generator Styles --- */
+         .prompt-gen-body {
             font-family: 'Roboto', sans-serif;
-            color: #e2e8f0; /* text-slate-200 */
+            color: #e2e8f0;
+            position: relative;
+            z-index: 2;
         }
         .prompt-gen-body .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .prompt-gen-body .glass-card {
+            background: rgba(23, 25, 35, 0.6);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
         .prompt-gen-body .neon-button {
             transition: all 0.3s ease;
             box-shadow: 0 0 5px #0ea5e9, 0 0 15px #0ea5e9, 0 0 25px #0ea5e9;
@@ -527,24 +535,46 @@
             background-position-x: 98%;
             background-position-y: 50%;
         }
+        .bg-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .bg-shapes div { position: absolute; list-style: none; display: block; width: 20px; height: 20px; background: rgba(14, 165, 233, 0.2); bottom: -150px; animation: rise 25s infinite linear; border-radius: 4px; }
+        .bg-shapes div:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
+        .bg-shapes div:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
+        .bg-shapes div:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
+        .bg-shapes div:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; }
+        .bg-shapes div:nth-child(5) { left: 65%; width: 20px; height: 20px; animation-delay: 0s; }
+        .bg-shapes div:nth-child(6) { left: 75%; width: 110px; height: 110px; animation-delay: 3s; }
+        .bg-shapes div:nth-child(7) { left: 35%; width: 150px; height: 150px; animation-delay: 7s; }
+        .bg-shapes div:nth-child(8) { left: 50%; width: 25px; height: 25px; animation-delay: 15s; animation-duration: 45s; }
+        .bg-shapes div:nth-child(9) { left: 20%; width: 15px; height: 15px; animation-delay: 2s; animation-duration: 35s; }
+        .bg-shapes div:nth-child(10) { left: 85%; width: 150px; height: 150px; animation-delay: 0s; animation-duration: 11s; }
+        @keyframes rise { 0% { transform: translateY(0) rotate(0deg); opacity: 1; border-radius: 4px; } 100% { transform: translateY(-120vh) rotate(720deg); opacity: 0; border-radius: 50%; } }
+        
         .prompt-gen-body .toggle-switch { display: inline-flex; background-color: #1e293b; border-radius: 9999px; border: 1px solid rgba(14, 165, 233, 0.3); padding: 4px; }
         .prompt-gen-body .toggle-switch input { display: none; }
         .prompt-gen-body .toggle-switch label { cursor: pointer; padding: 0.5rem 1rem; border-radius: 9999px; transition: all 0.3s ease; color: #94a3b8; font-weight: 600; white-space: nowrap; }
         .prompt-gen-body .toggle-switch input:checked + label { background-color: #0ea5e9; color: #0c0f14; box-shadow: 0 0 10px #0ea5e9; }
         
-        /* Recreated/Simplified Tailwind classes for the prompt generator */
         .prompt-gen-body input[type="text"], .prompt-gen-body select, .prompt-gen-body textarea, .prompt-gen-body p#prompt-output {
-             background-color: rgba(15, 23, 42, 0.8);
-             border: 1px solid rgba(3, 105, 161, 0.5);
+             background-color: #0f172a; /* bg-slate-900/80 */
+             border: 1px solid rgba(3, 105, 161, 0.5); /* border-sky-700/50 */
              width: 100%;
              border-radius: 0.5rem;
              padding: 0.75rem 1rem;
-             font-size: 1.125rem;
+             font-size: 1rem;
+             color: #e2e8f0;
         }
-         .prompt-gen-body input[type="text"]:focus, .prompt-gen-body select:focus, .prompt-gen-body textarea:focus {
+        .prompt-gen-body input[type="text"]:focus, .prompt-gen-body select:focus, .prompt-gen-body textarea:focus {
              outline: none;
              box-shadow: 0 0 0 2px #0ea5e9;
-         }
+        }
         .prompt-gen-body .space-y-6 > * + * { margin-top: 1.5rem; }
         .prompt-gen-body .mb-8 { margin-bottom: 2rem; }
         .prompt-gen-body .text-center { text-align: center; }
@@ -556,15 +586,15 @@
         .prompt-gen-body .items-center { align-items: center; }
         .prompt-gen-body .mb-4 { margin-bottom: 1rem; }
         .prompt-gen-body label { font-size: 0.875rem; margin-bottom: 0.5rem; display: block; color: #38bdf8;}
-        .prompt-gen-body .sm-flex-row { flex-direction: column; }
-        @media (min-width: 640px) { .prompt-gen-body .sm-flex-row { flex-direction: row; } }
+        .prompt-gen-body .sm\:flex-row { flex-direction: column; }
+        @media (min-width: 640px) { .prompt-gen-body .sm\:flex-row { flex-direction: row; } }
         .prompt-gen-body .gap-4 { gap: 1rem; }
         .prompt-gen-body .flex-grow { flex-grow: 1; }
         .prompt-gen-body .flex-shrink-0 { flex-shrink: 0; }
         .prompt-gen-body .self-end { align-self: flex-end; }
         .prompt-gen-body .gap-2 { gap: 0.5rem; }
-        .prompt-gen-body .sm-w-auto { width: 100%; }
-         @media (min-width: 640px) { .prompt-gen-body .sm-w-auto { width: auto; } }
+        .prompt-gen-body .sm\:w-auto { width: 100%; }
+        @media (min-width: 640px) { .prompt-gen-body .sm\:w-auto { width: auto; } }
         .prompt-gen-body button { border-radius: 0.5rem; font-weight: 700; padding: 0.75rem; transition: all 0.3s ease; }
         .prompt-gen-body #generate-btn { padding-left: 1.5rem; padding-right: 1.5rem; background-color: #0ea5e9; color: #0f172a; }
         .prompt-gen-body #shuffle-btn, .prompt-gen-body #shuffle-style-btn { padding: 0.75rem 1rem; }
@@ -574,11 +604,9 @@
         .prompt-gen-body #shuffle-style-btn:hover { background-color: #818cf8; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4); }
         .prompt-gen-body p#prompt-output { min-height: 100px; color: #cbd5e1; user-select: text; }
         .prompt-gen-body .relative { position: relative; }
-        .prompt-gen-body .prompt-buttons { position: absolute; top: 0.5rem; right: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;}
-        .prompt-gen-body .prompt-buttons button { background-color: rgba(51, 65, 85, 0.5); font-size: 0.875rem; border-radius: 0.375rem; padding: 0.25rem 0.75rem;}
-        .prompt-gen-body #copy-btn { color: #7dd3fc; }
+        .prompt-gen-body #copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background-color: rgba(51, 65, 85, 0.5); font-size: 0.875rem; border-radius: 0.375rem; padding: 0.25rem 0.75rem; color: #7dd3fc; }
         .prompt-gen-body #copy-btn:hover { background-color: #0284c7; color: white; }
-        .prompt-gen-body #use-prompt-btn { color: #f472b6; }
+        .prompt-gen-body #use-prompt-btn { position: absolute; bottom: 0.5rem; right: 0.5rem; background-color: rgba(51, 65, 85, 0.5); font-size: 0.875rem; border-radius: 0.375rem; padding: 0.25rem 0.75rem; color: #f472b6; }
         .prompt-gen-body #use-prompt-btn:hover { background-color: #db2777; color: white; }
     </style>
 </head>
@@ -737,73 +765,149 @@
     <!-- Floating Prompt Generator Popup -->
     <div id="prompt-generator-popup" class="modal">
         <div id="prompt-generator-content">
+             <div class="bg-shapes"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
             <span id="close-prompt-generator">&times;</span>
             <div class="prompt-gen-body">
                 <header class="text-center mb-8">
-                    <h1 class="font-orbitron">Kawaii Sticker Prompt Generator</h1>
-                    <p>Create your unique art prompt for countless generations.</p>
+                    <h1 class="font-orbitron text-3xl md:text-4xl font-bold text-sky-400 tracking-wider">Universal Prompt Generator</h1>
+                    <p class="text-slate-400 mt-2">Create unique prompts for characters, scenes, and designs.</p>
                 </header>
 
                 <div class="space-y-6 mb-8">
+                    <!-- Toggles Section -->
                     <div class="flex flex-col items-center mb-4">
-                        <label class="font-orbitron text-sm mb-2 block">PROMPT TYPE</label>
+                        <label class="font-orbitron text-sky-400 text-sm mb-2 block">GENERATOR MODE</label>
                         <div class="toggle-switch">
                             <input type="radio" id="single-char" name="prompt-type" value="single" checked>
                             <label for="single-char">Single</label>
                             <input type="radio" id="group-char" name="prompt-type" value="group">
                             <label for="group-char">Group</label>
+                            <input type="radio" id="certificate-type" name="prompt-type" value="certificate">
+                            <label for="certificate-type">Decorations</label>
+                            <input type="radio" id="font-type" name="prompt-type" value="font">
+                            <label for="font-type">Fonts</label>
                         </div>
                     </div>
 
+
                     <div>
-                        <label for="character-input" class="font-orbitron text-sm mb-2 block">CUSTOM CHARACTER(S) (OPTIONAL)</label>
+                        <label for="character-input" id="character-label" class="font-orbitron text-sky-400 text-sm mb-2 block">CUSTOM SUBJECT (OPTIONAL)</label>
                         <input type="text" id="character-input" placeholder="e.g., 'a smiling red panda', 'my OC Luna'">
                     </div>
 
-                    <div class="flex sm-flex-row gap-4">
-                        <div class="flex-grow">
-                            <label for="theme-select" class="font-orbitron text-sm mb-2 block">SELECT THEME</label>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <div id="theme-selector-wrapper" class="flex-grow">
+                            <label for="theme-select" class="font-orbitron text-sky-400 text-sm mb-2 block">SELECT THEME</label>
                             <select id="theme-select">
-                                <optgroup label="Daily Life"><option value="House">House</option><option value="MorningRoutine">Morning Routine</option><option value="Cooking">Cooking</option><option value="Hobbies">Hobbies</option><option value="Fitness">Fitness</option><option value="Bedtime">Bedtime</option></optgroup>
-                                <optgroup label="Places & Activities"><option value="School">School</option><option value="Office">Office</option><option value="Canteen">Canteen</option><option value="Cafe">Cafe</option><option value="Bar">Bar</option><option value="Shopping">Shopping</option><option value="Game">Gaming</option><option value="CityLife">City Life</option><option value="BeachDay">Beach Day</option><option value="Nature">Nature</option><option value="Sports">Sports</option><option value="OnTheRoad">On The Road</option></optgroup>
-                                <optgroup label="Fantasy & Sci-Fi"><option value="Fantasy">Fantasy</option><option value="SciFi">Sci-Fi</option></optgroup>
+                                <optgroup label="Daily Life">
+                                    <option value="House">House</option>
+                                    <option value="MorningRoutine">Morning Routine</option>
+                                    <option value="Cooking">Cooking</option>
+                                    <option value="Hobbies">Hobbies</option>
+                                    <option value="Fitness">Fitness</option>
+                                    <option value="Bedtime">Bedtime</option>
+                                </optgroup>
+                                <optgroup label="Places & Activities">
+                                    <option value="School">School</option>
+                                    <option value="Office">Office</option>
+                                    <option value="Canteen">Canteen</option>
+                                    <option value="Cafe">Cafe</option>
+                                    <option value="Bar">Bar</option>
+                                    <option value="Shopping">Shopping</option>
+                                    <option value="Game">Gaming</option>
+                                    <option value="CityLife">City Life</option>
+                                    <option value="BeachDay">Beach Day</option>
+                                    <option value="Nature">Nature</option>
+                                    <option value="Sports">Sports</option>
+                                    <option value="OnTheRoad">On The Road</option>
+                                </optgroup>
+                                <optgroup label="Fantasy & Sci-Fi">
+                                    <option value="Fantasy">Fantasy</option>
+                                    <option value="SciFi">Sci-Fi</option>
+                                </optgroup>
                             </select>
                         </div>
                         <div class="flex-shrink-0 self-end flex gap-2">
-                             <button id="generate-btn" class="sm-w-auto font-orbitron neon-button" title="Generate New Prompt">🎲</button>
-                             <button id="shuffle-btn" title="Shuffle Elements" class="sm-w-auto font-orbitron"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg></button>
-                             <button id="shuffle-style-btn" title="Shuffle Style" class="sm-w-auto font-orbitron"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
+                             <button id="generate-btn" title="Generate New Prompt">
+                                 🎲
+                             </button>
+                             <button id="shuffle-btn" title="Shuffle Elements">
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-cw"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                             </button>
+                              <button id="shuffle-style-btn" title="Shuffle Style">
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                             </button>
                         </div>
                     </div>
                     
-                    <div>
-                        <label for="style-select" class="font-orbitron text-sm mb-2 block">SELECT STYLE</label>
-                        <select id="style-select">
-                            <option value="sticker">Kawaii Sticker</option><option value="popart">Futuristic Pop Art</option><option value="watercolor">Soft Watercolor</option><option value="pixel">Pixel Art</option><option value="retro">Retro Cartoon</option><option value="gothic">Gothic Cute</option><option value="minimalist">Minimalist Line Art</option><option value="storybook">Storybook Illustration</option><option value="clay">Claymation Style</option><option value="vaporwave">Vaporwave Aesthetic</option><option value="nouveau">Art Nouveau Cute</option><option value="ukiyo">Ukiyo-e Chibi</option><option value="steampunk">Steampunk Cutout</option><option value="cyberpunk">Cyberpunk Chibi</option><option value="doodle">Doodle Art</option><option value="stainedglass">Stained Glass</option><option value="custom">Custom</option>
-                        </select>
-                    </div>
+                     <div class="flex flex-col sm:flex-row gap-4">
+                         <div class="flex-grow">
+                             <label for="style-select" class="font-orbitron text-sky-400 text-sm mb-2 block">SELECT STYLE</label>
+                             <select id="style-select">
+                                 <optgroup label="Font Styles">
+                                     <option value="font_vintage">Vintage Script</option>
+                                     <option value="font_futuristic">Futuristic Digital</option>
+                                     <option value="font_playful">Playful Hand-drawn</option>
+                                     <option value="font_elegant">Elegant Serif</option>
+                                     <option value="font_graffiti">Urban Graffiti</option>
+                                     <option value="font_artnouveau">Art Nouveau</option>
+                                     <option value="font_blackletter">Gothic Blackletter</option>
+                                     <option value="font_3d">3D Block</option>
+                                     <option value="font_liquid">Liquid Chrome</option>
+                                     <option value="font_woodcut">Woodcut Print</option>
+                                     <option value="font_neon">Neon Sign</option>
+                                     <option value="font_stitch">Stitched Fabric</option>
+                                     <option value="font_bubble">Bubble Letters</option>
+                                     <option value="font_floral">Floral & Vine</option>
+                                 </optgroup>
+                                 <optgroup label="Decorative Styles">
+                                     <option value="certificate_classic">Elegant Classic</option>
+                                     <option value="certificate_modern">Clean Modern</option>
+                                     <option value="certificate_vintage">Aged Vintage</option>
+                                     <option value="certificate_playful">Playful & Colorful</option>
+                                 </optgroup>
+                                 <optgroup label="Character & Scene Styles">
+                                     <option value="sticker">Kawaii Sticker</option>
+                                     <option value="popart">Futuristic Pop Art</option>
+                                     <option value="watercolor">Soft Watercolor</option>
+                                     <option value="pixel">Pixel Art</option>
+                                     <option value="retro">Retro Cartoon</option>
+                                     <option value="gothic">Gothic Cute</option>
+                                     <option value="minimalist">Minimalist Line Art</option>
+                                     <option value="storybook">Storybook Illustration</option>
+                                     <option value="clay">Claymation Style</option>
+                                     <option value="vaporwave">Vaporwave Aesthetic</option>
+                                     <option value="nouveau">Art Nouveau Cute</option>
+                                     <option value="ukiyo">Ukiyo-e Chibi</option>
+                                     <option value="steampunk">Steampunk Cutout</option>
+                                     <option value="cyberpunk">Cyberpunk Chibi</option>
+                                     <option value="doodle">Doodle Art</option>
+                                     <option value="stainedglass">Stained Glass</option>
+                                 </optgroup>
+                                 <option value="custom">Custom</option>
+                             </select>
+                         </div>
+                     </div>
 
                     <div>
-                        <label for="custom-style-input" class="font-orbitron text-sm mb-2 block">PROMPT STYLE EDITOR</label>
+                        <label for="custom-style-input" class="font-orbitron text-sky-400 text-sm mb-2 block">PROMPT STYLE EDITOR</label>
                         <textarea id="custom-style-input" rows="5" placeholder="Edit the selected style or write your own..."></textarea>
                     </div>
                 </div>
 
                 <div>
-                    <label for="prompt-output" class="font-orbitron text-sm mb-2 block">GENERATED PROMPT</label>
+                    <label for="prompt-output" class="font-orbitron text-sky-400 text-sm mb-2 block">GENERATED PROMPT</label>
                     <div class="relative">
                         <p id="prompt-output"></p>
-                        <div class="prompt-buttons">
-                           <button id="copy-btn">Copy</button>
-                           <button id="use-prompt-btn">Use</button>
-                        </div>
+                        <button id="copy-btn">Copy</button>
+                        <button id="use-prompt-btn">Use</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <button id="prompt-drawer-toggle" title="Toggle Prompt Generator">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path><path d="m15 5 3 3"></path></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path><path d="m15 5 3 3"></path></svg>
     </button>
 
     <div id="previewModal" class="modal"><div class="modal-content"><span id="closePreview" class="close-modal">&times;</span><h2>Finished Product Preview</h2><img id="previewImage" src="" alt="Preview of your design"></div></div>
@@ -2600,75 +2704,375 @@
             }
 
             function initPromptGenerator() {
-                const prompts = {"character":["cute girl","cool boy","sleepy cat","energetic puppy","mischievous fox","wise owl","brave lion cub","shy bunny","playful squirrel","magical unicorn","tiny dragon","friendly robot","curious alien","spooky ghost","grumpy gnome","happy slime","adventurous penguin","artistic raccoon","baker bear","chef frog","detective dog","explorer hamster","fashionista flamingo","gardener giraffe","hacker hedgehog","ice cream loving narwhal","jester jellyfish","king koala","lazy llama","musician mouse","ninja newt","operator octopus","pirate parrot","queen bee","rockstar rabbit","scientist sloth","teacher turtle","umbrella bird","vampire bat","werewolf wolf","yeti crab","zombie zebra","angelic axolotl","bookworm butterfly","captain corgi","dancer dolphin","electric eel","firefighter ferret","ghostly goldfish","heroic horse","inventor iguana","juggler jaguar","knight kitten","librarian lemur","mailman mole","nurse nightingale","officer otter","pilot pigeon","quarterback quail","reporter raccoon","surfer seal","tourist tiger","viking vole","waiter walrus","xylophonist xenops","yodeler yak","zookeeper zebra","archaeologist armadillo","barista bee","carpenter capybara","dj dingo","electrician elephant","farmer ferret","geologist goat","historian hippo","illustrator ibis","janitor jaguar","karate koala","lifeguard lobster","magician meerkat","novelist newt","optometrist owl","plumber platypus","radiologist rhino","sculptor sheep","tailor tapir","undertaker urial","veterinarian vulture","writer wolf","yoga instructor yak"],"facialExpression":["a happy smile","a mischievous grin","a curious look","a sleepy yawn","a determined frown","a surprised gasp","a sad pout","a confident smirk","a shy blush","an angry scowl","a joyful laugh","a bored expression","a focused look","a dreamy stare","a cheeky wink","puffed cheeks","a content sigh","an excited squeal","a worried face","a proud beam","a silly face with tongue out","a thoughtful hum","eyes wide with wonder","a knowing nod","a facepalm expression","a teary-eyed look","a relieved smile","a nervous gulp","a look of pure determination","a mischievous side-eye glance","a serene and peaceful expression","a face full of awe","a smug and knowing look","an apologetic smile","a look of disbelief","a face scrunched up in concentration","a hearty laugh","a sympathetic head tilt","a skeptical raised eyebrow"],"promptStyles":{"sticker":"separate with their own outlines, borders, and cuts for the characters and elements, designed as a kawaii sticker with unique cutout style that they don't intersect, background contained only inside the outlines, thick black outlines with minimal white border, white canvas, high resolution.","popart":"Bright, vibrant anime-style illustration with a futuristic pop-art and K-pop inspired aesthetic. Use smooth, clean digital line art with glossy neon gradients, pastel accents, and glowing crystal effects. Add playful graphic elements like hearts, stars, and sparkles floating in the background. Place the design on a clean white or light backdrop with faint diagonal lines for texture. Include bold, modern gradient typography at the top for branding or logo space. Overall vibe is energetic, youthful, and eye-catching, blending anime, cyber-fantasy, and trendy streetwear design.","watercolor":"Soft and gentle watercolor illustration with bleeding colors and delicate ink outlines. The background should be a light paper texture. The overall feel is dreamy, whimsical, and handcrafted. Use a pastel color palette.","pixel":"Crisp 16-bit pixel art style. Use a limited, vibrant color palette with no anti-aliasing. Characters should have bold, simple outlines. The background should be a simple dithering pattern. Think retro video game sprite, high resolution.","retro":"Retro 1950s cartoon style with bold, thick outlines and solid block colors. Add a subtle paper texture and grain effect over the whole image. The characters should have pie-eyes and rubber hose limbs. Energetic and nostalgic feel.","gothic":"A 'pastel goth' or 'creepy cute' aesthetic. Combines cute chibi characters with gothic elements like bats, skulls, and dark colors, but using a pastel palette (lavender, mint green, baby pink). Add cute stitches and patterns. Spooky but adorable.","minimalist":"Minimalist clean vector line art. Uses only a few colors and simple, geometric shapes. No background, just the characters and props on a solid white canvas. Focus on elegant curves and negative space.","storybook":"Charming children's storybook illustration style. Use soft, textured brushes that mimic colored pencils or crayons. The lighting should be warm and inviting. A gentle, heartwarming, and classic feel.","clay":"A cute 3D claymation style. The characters and objects should look like they are made of soft, smooth modeling clay with visible fingerprints and tool marks for a handcrafted feel. Soft, diffused lighting and shallow depth of field, like a stop-motion movie set.","vaporwave":"Vaporwave aesthetic with neon pinks and blues, checkerboard patterns, and Greco-Roman statue elements. Add glitch effects and 90s internet iconography. A surreal, nostalgic, and dreamy vibe.","nouveau":"Art Nouveau inspired illustration with elegant, flowing, organic lines and floral motifs. Use a muted, sophisticated color palette with gold accents. Intricate and decorative.","ukiyo":"Japanese Ukiyo-e woodblock print style. Flat areas of color, bold outlines, and patterns inspired by traditional Japanese art. A sense of calm, beauty, and history.","steampunk":"Steampunk style, featuring gears, cogs, brass, and copper elements. Characters wear Victorian-era clothing mixed with mechanical gadgets. A blend of historical and futuristic.","cyberpunk":"Cyberpunk chibi style with neon lights, futuristic cityscapes, and cybernetic enhancements. A dark color palette with bright, glowing neon highlights. High-tech and gritty.","doodle":"A busy, chaotic doodle art style. The character is surrounded by lots of small, fun, hand-drawn elements and patterns. Black and white with small pops of color. Looks like a page from a sketchbook.","stainedglass":"Stained glass window effect with bold black lines separating segments of vibrant, glowing color. The light should appear to shine through the character. Luminous and decorative."}, "themes": { "House": { outfit: ["comfy pajamas", "a cozy sweater", "casual t-shirt and shorts", "a fluffy bathrobe", "gardening overalls", "an apron", "slippers shaped like animals", "a onesie", "an oversized hoodie", "flannel pajama pants", "a silk robe"], pose: ["watering plants", "watching TV on the sofa", "dusting furniture", "reading a book in a comfy chair", "building a pillow fort", "doing laundry", "sorting socks", "vacuuming the rug", "baking cookies", "rearranging photo frames"], interaction: ["playing a board game together", "co-building a pillow fort", "cooking a meal together", "arguing over the TV remote", "doing chores together", "watching a scary movie together", "untangling Christmas lights", "assembling IKEA furniture"], prop: ["a steaming mug", "a potted plant", "a TV remote", "a fluffy blanket", "a stack of books", "a feather duster", "a laundry basket", "a cozy armchair", "a plate of warm cookies", "a watering can", "a ball of yarn"] }, "MorningRoutine": { outfit: ["pajamas", "a bathrobe", "a towel wrap", "an oversized t-shirt", "matching workout clothes", "a silk robe", "a sleep mask on their forehead"], pose: ["brushing teeth", "yawning widely", "stretching happily", "making coffee", "looking in the mirror", "meditating peacefully", "hitting the snooze button", "pouring cereal", "trying to find matching socks"], interaction: ["racing to the bathroom", "making breakfast for each other", "exercising together in the living room", "helping each other pick outfits", "fighting over the blanket", "sharing a newspaper"], prop: ["a toothbrush", "an alarm clock", "a coffee machine", "a bowl of cereal", "a tube of toothpaste", "a yoga mat", "a steaming cup of tea", "a messy bed", "a pair of glasses", "a smartphone scrolling news"] }, "Cooking": { outfit: ["a chef's apron and hat", "matching baker's uniforms", "a stained t-shirt", "casual home clothes", "an oven mitt", "a bandana holding hair back"], pose: ["chopping vegetables", "stirring a pot", "flipping a pancake", "decorating a cake", "tasting food from a spoon", "kneading dough", "reading a recipe with a confused look", "cracking an egg perfectly"], interaction: ["having a flour fight", "decorating a large cake together", "following a recipe as a team", "taste-testing each other's creations", "making a mess in the kitchen", "doing the dishes together"], prop: ["a rolling pin", "a cookbook", "a whisk", "a steaming pot", "a beautifully decorated cake", "a cutting board", "a stack of clean plates", "a sizzling frying pan", "a spice rack", "measuring cups"] }, "Hobbies": { outfit: ["matching painter's smocks", "comfy knitting sweaters", "rockstar t-shirts", "gardening gloves and boots", "a photographer's vest", "a comfy reading robe"], pose: ["painting on a canvas", "knitting a scarf", "playing a guitar", "building with LEGOs", "taking a photo", "writing in a journal", "sculpting with clay", "doing a magic trick"], interaction: ["painting a portrait of each other", "playing a musical duet", "building a large LEGO castle together", "collaborating on a puzzle", "gardening side-by-side", "reviewing each other's photography"], prop: ["an easel", "a ball of yarn", "an electric guitar", "a camera", "a half-finished puzzle", "a fountain pen", "a beautiful bouquet", "a pottery wheel", "a model airplane", "a stamp collection book"] }, "Fitness": { outfit: ["matching workout outfits", "yoga outfits", "a sweat suit", "runner's gear", "a sweatband", "matching sports jerseys", "a retro aerobics leotard"], pose: ["lifting a tiny dumbbell", "doing a yoga pose", "jogging in place", "drinking from a water bottle", "jumping rope", "flexing muscles in a mirror", "looking exhausted on a treadmill"], interaction: ["spotting each other while lifting weights", "doing partner yoga poses", "racing each other on treadmills", "passing a medicine ball back and forth", "stretching together", "having a push-up contest"], prop: ["a yoga mat", "a water bottle", "a jump rope", "a dumbbell", "a stopwatch", "a soccer ball", "a kettlebell", "a resistance band", "a smoothie in a shaker bottle", "a fitness tracker watch"] }, "Bedtime": { outfit: ["matching pajamas with cute patterns", "long nightgowns", "sleeping caps", "fluffy slippers", "oversized sleep shirts", "a onesie with animal ears"], pose: ["reading a bedtime story", "hugging a teddy bear", "holding a night light", "sleepwalking", "dreaming of stars", "counting sheep", "falling out of bed", "pulling the covers up high"], interaction: ["having a pillow fight", "reading a bedtime story to each other", "sharing a bed", "telling scary stories under the covers", "building a blanket fort", "trying to steal the blanket from each other"], prop: ["a bedtime story book", "a teddy bear", "a glass of milk", "a crescent moon", "a trail of Z's", "a soft pillow", "a flock of fluffy sheep", "a dream catcher", "a glowing star projector"] }, "School": { outfit: ["school uniforms", "nerdy sweater vests", "matching gym class clothes", "science lab coats", "art class smocks", "a hall monitor's sash", "a graduation cap and gown"], pose: ["sitting at a desk", "raising a hand in class", "writing on a chalkboard", "doing a science experiment", "reading a textbook", "doodling in a notebook", "falling asleep in class"], interaction: ["passing notes in class", "working on a group project", "sharing a lunch at a table", "playing on the swings together", "cheating on a test", "decorating a locker together"], prop: ["a stack of books", "a giant pencil", "a backpack", "a bubbling beaker", "an apple for the teacher", "a school bus", "a globe", "a paper airplane", "a report card with all A's", "a spitball"] }, "Office": { outfit: ["business suits", "casual friday outfits", "matching company polos", "smart blouses and skirts", "an intern's oversized suit", "a 'World's Best Boss' t-shirt"], pose: ["typing on a laptop", "on a video call", "presenting a chart", "looking stressed with paperwork", "sipping coffee", "photocopying their face", "staring blankly at a screen"], interaction: ["gossiping by the water cooler", "collaborating on a whiteboard", "having a meeting in a conference room", "complaining about the boss", "sharing a box of donuts", "having a swivel chair race"], prop: ["a laptop", "a briefcase", "a pile of documents", "a coffee mug with a funny slogan", "a headset", "a stapler in jello", "a whiteboard with diagrams", "a water cooler", "a motivational cat poster"] }, "Canteen": { outfit: ["school uniforms", "casual work clothes", "a lunch lady's apron and hairnet", "a visitor's badge"], pose: ["carrying a lunch tray", "choosing food from the counter", "complaining about the food", "balancing a tray piled high with food", "trying to open a milk carton"], interaction: ["sitting at a long table eating together", "trading food items", "starting a food fight", "sharing a dessert", "comparing lunches", "saving a seat for a friend"], prop: ["a plastic lunch tray", "a carton of milk", "a mysterious casserole", "a vending machine", "a jello cup", "a spork", "a single green bean", "a pile of tater tots"] }, "Cafe": { outfit: ["a barista's apron", "trendy casual outfits", "cozy sweaters", "a writer's tweed jacket", "a beatnik's turtleneck and beret", "a student's hoodie"], pose: ["sipping a latte", "working on a laptop", "reading a book", "drawing in a sketchbook", "people-watching out the window", "writing furiously in a journal"], interaction: ["chatting over coffee", "sharing a dessert", "studying together", "on a coffee date", "co-writing a story on a laptop", "ignoring each other while on their phones"], prop: ["a steaming cup of coffee with latte art", "a croissant on a plate", "a laptop with stickers", "an open book", "two straws in one milkshake", "a slice of cake", "a sugar dispenser", "a stack of napkins"] }, "Bar": { outfit: ["a bartender's vest and bowtie", "stylish evening dresses", "cool leather jackets", "casual t-shirts for a dive bar", "a bouncer's all-black outfit", "a musician's band t-shirt"], pose: ["mixing a colorful cocktail", "leaning against the bar", "playing pool", "singing karaoke badly", "throwing darts", "looking cool and mysterious in a corner"], interaction: ["laughing with friends at a table", "listening to a live band together", "playing a game of darts", "cheers-ing with drinks", "dancing together", "arm wrestling at a table"], prop: ["a cocktail shaker", "a glowing neon sign", "a bowl of pretzels", "a pool table with balls", "a microphone on a stand", "a jukebox", "a dartboard", "a fancy-looking cocktail with a tiny umbrella"] }, "Shopping": { outfit: ["stylish dresses", "matching hoodies", "fancy hats", "trendy jackets", "comfortable walking shoes", "a shirt with a shopping pun"], pose: ["holding many shopping bags", "pushing a shopping cart", "looking at a price tag with shock", "trying on a hat", "getting lost in a clothing rack", "examining a product closely"], interaction: ["helping each other pick out outfits", "fighting over the last item on sale", "sharing a giant pretzel in the food court", "getting tangled in clothing racks", "comparing prices on their phones"], prop: ["colorful shopping bags", "a shopping cart full of groceries", "a designer handbag", "a giant pretzel", "a credit card", "a mannequin", "a '50% OFF' sign", "a long receipt", "a barcode scanner"] }, "Game": { outfit: ["matching gamer hoodies", "VR headsets", "t-shirts of a favorite game", "esports team jerseys", "cosplay of game characters", "a wizard robe for a tabletop RPG"], pose: ["holding a game controller", "staring intensely at a screen", "rolling dice for a board game", "rage-quitting", "celebrating a victory", "looking at a strategy guide"], interaction: ["playing a competitive video game", "co-op gaming on the same couch", "playing a board game together", "high-fiving after a win", "arguing about the rules", "sharing a strategy guide"], prop: ["glowing game controllers", "gaming headsets", "a D20 die", "a virtual reality landscape", "a stack of board games", "a shared bowl of snacks", "a pizza box", "a character sheet", "a pile of meeples"] }, "CityLife": { outfit: ["trench coats", "touristy t-shirts", "business suits", "street performer costumes", "messenger bags", "a delivery person's uniform"], pose: ["waiting for a bus", "hailing a taxi", "looking up at a skyscraper", "eating street food", "taking a photo of a landmark", "looking at a subway map"], interaction: [""]}, "BeachDay": {}, "Nature": {}, "Sports": {}, "OnTheRoad": {}, "Fantasy": {}, "SciFi": {} } };
+                // --- DATA LISTS ---
+                const prompts = {
+                    character: [
+                        "cute girl", "cool boy", "sleepy cat", "energetic puppy", "mischievous fox", "wise owl", "brave lion cub", "shy bunny", "playful squirrel", "magical unicorn", "tiny dragon", "friendly robot", "curious alien", "spooky ghost", "grumpy gnome", "happy slime", "adventurous penguin", "artistic raccoon", "baker bear", "chef frog", "detective dog", "explorer hamster", "fashionista flamingo", "gardener giraffe", "hacker hedgehog", "ice cream loving narwhal", "jester jellyfish", "king koala", "lazy llama", "musician mouse", "ninja newt", "operator octopus", "pirate parrot", "queen bee", "rockstar rabbit", "scientist sloth", "teacher turtle", "umbrella bird", "vampire bat", "werewolf wolf", "yeti crab", "zombie zebra", "angelic axolotl", "bookworm butterfly", "captain corgi", "dancer dolphin", "electric eel", "firefighter ferret", "ghostly goldfish", "heroic horse", "inventor iguana", "juggler jaguar", "knight kitten", "librarian lemur", "mailman mole", "nurse nightingale", "officer otter", "pilot pigeon", "quarterback quail", "reporter raccoon", "surfer seal", "tourist tiger", "viking vole", "waiter walrus", "xylophonist xenops", "yodeler yak", "zookeeper zebra", "archaeologist armadillo", "barista bee", "carpenter capybara", "dj dingo", "electrician elephant", "farmer ferret", "geologist goat", "historian hippo", "illustrator ibis", "janitor jaguar", "karate koala", "lifeguard lobster", "magician meerkat", "novelist newt", "optometrist owl", "plumber platypus", "radiologist rhino", "sculptor sheep", "tailor tapir", "undertaker urial", "veterinarian vulture", "writer wolf", "yoga instructor yak"
+                    ],
+                    facialExpression: [
+                        "a happy smile", "a mischievous grin", "a curious look", "a sleepy yawn", "a determined frown", "a surprised gasp", "a sad pout", "a confident smirk", "a shy blush", "an angry scowl", "a joyful laugh", "a bored expression", "a focused look", "a dreamy stare", "a cheeky wink", "puffed cheeks", "a content sigh", "an excited squeal", "a worried face", "a proud beam", "a silly face with tongue out", "a thoughtful hum", "eyes wide with wonder", "a knowing nod", "a facepalm expression", "a teary-eyed look", "a relieved smile", "a nervous gulp", "a look of pure determination", "a mischievous side-eye glance", "a serene and peaceful expression", "a face full of awe", "a smug and knowing look", "an apologetic smile", "a look of disbelief", "a face scrunched up in concentration", "a hearty laugh", "a sympathetic head tilt", "a skeptical raised eyebrow"
+                    ],
+                    promptStyles: {
+                        font_vintage: "Vintage typography design, reminiscent of old signage and packaging. Features ornate details, distressed textures, and a warm, nostalgic color palette. Vector graphic.",
+                        font_futuristic: "Futuristic, sci-fi inspired typography. Features clean, geometric lines, digital glitch effects, and a cool color palette of blues and purples with neon highlights. Vector art.",
+                        font_playful: "Playful, hand-drawn lettering style. Features bubbly shapes, bright, cheerful colors, and whimsical doodle elements. Fun and energetic vibe. Vector graphic.",
+                        font_elegant: "Elegant and luxurious typography. Features delicate, flowing lines, metallic textures like gold or silver, and a sophisticated, minimalist aesthetic. High-resolution vector.",
+                        font_graffiti: "Urban graffiti art style. Features bold, overlapping letters, spray paint textures, and vibrant, high-contrast colors. Dynamic and edgy vibe. Vector graphic.",
+                        font_artnouveau: "Art Nouveau typography with elegant, flowing, organic lines and floral motifs. Uses a muted, sophisticated color palette with gold accents. Intricate and decorative. Vector graphic.",
+                        font_blackletter: "Classic Gothic blackletter calligraphy. Features sharp, angular lines, high contrast, and a traditional, historical feel. Ornate and dramatic. Vector graphic.",
+                        font_3d: "Bold 3D block lettering. Features a strong sense of dimension, dramatic shadows, and a solid, impactful presence. Can be colorful or monochrome. High-resolution vector.",
+                        font_liquid: "Liquid chrome or melting typography effect. Features smooth, reflective surfaces and a fluid, dynamic shape. Futuristic and surreal. High-resolution vector.",
+                        font_woodcut: "Retro woodcut or linocut print style typography. Features rough, imperfect edges, strong black lines, and a handcrafted, analog feel. Vector graphic.",
+                        font_neon: "Realistic neon sign effect. Features glowing tubes of light, a dark background to make the colors pop, and visible wiring for authenticity. Luminous and eye-catching.",
+                        font_stitch: "Typography that appears to be stitched or embroidered onto fabric. Features visible thread textures, fabric background, and a cozy, handcrafted feel. High-resolution.",
+                        font_bubble: "Fun, rounded bubble letter typography. Features soft, inflated shapes, glossy highlights, and a playful, friendly vibe. Often uses bright, cheerful colors. Vector graphic.",
+                        font_floral: "Typography made of or decorated with flowers and vines. Features letters formed by intertwined petals, stems, and leaves. Natural, beautiful, and delicate. Vector graphic.",
+                        certificate_classic: "An elegant, high-resolution graphic design asset pack. Features clean vector lines, luxurious textures, and a professional, prestigious aesthetic. The composition should be balanced and legible, suitable for high-quality printing.",
+                        certificate_modern: "A modern, minimalist set of graphic elements. Features sharp geometric shapes, bold sans-serif typography, and a clean, corporate color palette. Focus on negative space and clarity. Vector art.",
+                        certificate_vintage: "A vintage-inspired collection of design assets. Features ornate, hand-drawn filigree, serif fonts, and aged parchment textures. The aesthetic is reminiscent of 19th-century documents and diplomas. Sepia tones.",
+                        certificate_playful: "A playful and colorful asset pack for fun awards. Features bright, chunky shapes, whimsical doodle elements, and friendly, rounded fonts. The vibe is celebratory, energetic, and informal.",
+                        sticker: "separate with their own outlines, borders, and cuts for the characters and elements, designed as a kawaii sticker with unique cutout style that they don't intersect, background contained only inside the outlines, thick black outlines with minimal white border, white canvas, high resolution.",
+                        popart: "Bright, vibrant anime-style illustration with a futuristic pop-art and K-pop inspired aesthetic. Use smooth, clean digital line art with glossy neon gradients, pastel accents, and glowing crystal effects. Add playful graphic elements like hearts, stars, and sparkles floating in the background. Place the design on a clean white or light backdrop with faint diagonal lines for texture. Include bold, modern gradient typography at the top for branding or logo space. Overall vibe is energetic, youthful, and eye-catching, blending anime, cyber-fantasy, and trendy streetwear design.",
+                        watercolor: "Soft and gentle watercolor illustration with bleeding colors and delicate ink outlines. The background should be a light paper texture. The overall feel is dreamy, whimsical, and handcrafted. Use a pastel color palette.",
+                        pixel: "Crisp 16-bit pixel art style. Use a limited, vibrant color palette with no anti-aliasing. Characters should have bold, simple outlines. The background should be a simple dithering pattern. Think retro video game sprite, high resolution.",
+                        retro: "Retro 1950s cartoon style with bold, thick outlines and solid block colors. Add a subtle paper texture and grain effect over the whole image. The characters should have pie-eyes and rubber hose limbs. Energetic and nostalgic feel.",
+                        gothic: "A 'pastel goth' or 'creepy cute' aesthetic. Combines cute chibi characters with gothic elements like bats, skulls, and dark colors, but using a pastel palette (lavender, mint green, baby pink). Add cute stitches and patterns. Spooky but adorable.",
+                        minimalist: "Minimalist clean vector line art. Uses only a few colors and simple, geometric shapes. No background, just the characters and props on a solid white canvas. Focus on elegant curves and negative space.",
+                        storybook: "Charming children's storybook illustration style. Use soft, textured brushes that mimic colored pencils or crayons. The lighting should be warm and inviting. A gentle, heartwarming, and classic feel.",
+                        clay: "A cute 3D claymation style. The characters and objects should look like they are made of soft, smooth modeling clay with visible fingerprints and tool marks for a handcrafted feel. Soft, diffused lighting and shallow depth of field, like a stop-motion movie set.",
+                        vaporwave: "Vaporwave aesthetic with neon pinks and blues, checkerboard patterns, and Greco-Roman statue elements. Add glitch effects and 90s internet iconography. A surreal, nostalgic, and dreamy vibe.",
+                        nouveau: "Art Nouveau inspired illustration with elegant, flowing, organic lines and floral motifs. Use a muted, sophisticated color palette with gold accents. Intricate and decorative.",
+                        ukiyo: "Japanese Ukiyo-e woodblock print style. Flat areas of color, bold outlines, and patterns inspired by traditional Japanese art. A sense of calm, beauty, and history.",
+                        steampunk: "Steampunk style, featuring gears, cogs, brass, and copper elements. Characters wear Victorian-era clothing mixed with mechanical gadgets. A blend of historical and futuristic.",
+                        cyberpunk: "Cyberpunk chibi style with neon lights, futuristic cityscapes, and cybernetic enhancements. A dark color palette with bright, glowing neon highlights. High-tech and gritty.",
+                        doodle: "A busy, chaotic doodle art style. The character is surrounded by lots of small, fun, hand-drawn elements and patterns. Black and white with small pops of color. Looks like a page from a sketchbook.",
+                        stainedglass: "Stained glass window effect with bold black lines separating segments of vibrant, glowing color. The light should appear to shine through the character. Luminous and decorative."
+                    },
+                    themes: {
+                        // For each theme, 'pose' is for single characters, 'interaction' is for groups.
+                        House: {
+                            outfit: ["comfy pajamas", "a cozy sweater", "casual t-shirt and shorts", "a fluffy bathrobe", "gardening overalls", "an apron", "slippers shaped like animals", "a onesie", "an oversized hoodie", "flannel pajama pants", "a silk robe"],
+                            pose: ["watering plants", "watching TV on the sofa", "dusting furniture", "reading a book in a comfy chair", "building a pillow fort", "doing laundry", "sorting socks", "vacuuming the rug", "baking cookies", "rearranging photo frames"],
+                            interaction: ["playing a board game together", "co-building a pillow fort", "cooking a meal together", "arguing over the TV remote", "doing chores together", "watching a scary movie together", "untangling Christmas lights", "assembling IKEA furniture"],
+                            prop: ["a steaming mug", "a potted plant", "a TV remote", "a fluffy blanket", "a stack of books", "a feather duster", "a laundry basket", "a cozy armchair", "a plate of warm cookies", "a watering can", "a ball of yarn"]
+                        },
+                        MorningRoutine: {
+                            outfit: ["pajamas", "a bathrobe", "a towel wrap", "an oversized t-shirt", "matching workout clothes", "a silk robe", "a sleep mask on their forehead"],
+                            pose: ["brushing teeth", "yawning widely", "stretching happily", "making coffee", "looking in the mirror", "meditating peacefully", "hitting the snooze button", "pouring cereal", "trying to find matching socks"],
+                            interaction: ["racing to the bathroom", "making breakfast for each other", "exercising together in the living room", "helping each other pick outfits", "fighting over the blanket", "sharing a newspaper"],
+                            prop: ["a toothbrush", "an alarm clock", "a coffee machine", "a bowl of cereal", "a tube of toothpaste", "a yoga mat", "a steaming cup of tea", "a messy bed", "a pair of glasses", "a smartphone scrolling news"]
+                        },
+                        Cooking: {
+                            outfit: ["a chef's apron and hat", "matching baker's uniforms", "a stained t-shirt", "casual home clothes", "an oven mitt", "a bandana holding hair back"],
+                            pose: ["chopping vegetables", "stirring a pot", "flipping a pancake", "decorating a cake", "tasting food from a spoon", "kneading dough", "reading a recipe with a confused look", "cracking an egg perfectly"],
+                            interaction: ["having a flour fight", "decorating a large cake together", "following a recipe as a team", "taste-testing each other's creations", "making a mess in the kitchen", "doing the dishes together"],
+                            prop: ["a rolling pin", "a cookbook", "a whisk", "a steaming pot", "a beautifully decorated cake", "a cutting board", "a stack of clean plates", "a sizzling frying pan", "a spice rack", "measuring cups"]
+                        },
+                        Hobbies: {
+                            outfit: ["matching painter's smocks", "comfy knitting sweaters", "rockstar t-shirts", "gardening gloves and boots", "a photographer's vest", "a comfy reading robe"],
+                            pose: ["painting on a canvas", "knitting a scarf", "playing a guitar", "building with LEGOs", "taking a photo", "writing in a journal", "sculpting with clay", "doing a magic trick"],
+                            interaction: ["painting a portrait of each other", "playing a musical duet", "building a large LEGO castle together", "collaborating on a puzzle", "gardening side-by-side", "reviewing each other's photography"],
+                            prop: ["an easel", "a ball of yarn", "an electric guitar", "a camera", "a half-finished puzzle", "a fountain pen", "a beautiful bouquet", "a pottery wheel", "a model airplane", "a stamp collection book"]
+                        },
+                        Fitness: {
+                            outfit: ["matching workout outfits", "yoga outfits", "a sweat suit", "runner's gear", "a sweatband", "matching sports jerseys", "a retro aerobics leotard"],
+                            pose: ["lifting a tiny dumbbell", "doing a yoga pose", "jogging in place", "drinking from a water bottle", "jumping rope", "flexing muscles in a mirror", "looking exhausted on a treadmill"],
+                            interaction: ["spotting each other while lifting weights", "doing partner yoga poses", "racing each other on treadmills", "passing a medicine ball back and forth", "stretching together", "having a push-up contest"],
+                            prop: ["a yoga mat", "a water bottle", "a jump rope", "a dumbbell", "a stopwatch", "a soccer ball", "a kettlebell", "a resistance band", "a smoothie in a shaker bottle", "a fitness tracker watch"]
+                        },
+                        Bedtime: {
+                            outfit: ["matching pajamas with cute patterns", "long nightgowns", "sleeping caps", "fluffy slippers", "oversized sleep shirts", "a onesie with animal ears"],
+                            pose: ["reading a bedtime story", "hugging a teddy bear", "holding a night light", "sleepwalking", "dreaming of stars", "counting sheep", "falling out of bed", "pulling the covers up high"],
+                            interaction: ["having a pillow fight", "reading a bedtime story to each other", "sharing a bed", "telling scary stories under the covers", "building a blanket fort", "trying to steal the blanket from each other"],
+                            prop: ["a bedtime story book", "a teddy bear", "a glass of milk", "a crescent moon", "a trail of Z's", "a soft pillow", "a flock of fluffy sheep", "a dream catcher", "a glowing star projector"]
+                        },
+                        School: {
+                            outfit: ["school uniforms", "nerdy sweater vests", "matching gym class clothes", "science lab coats", "art class smocks", "a hall monitor's sash", "a graduation cap and gown"],
+                            pose: ["sitting at a desk", "raising a hand in class", "writing on a chalkboard", "doing a science experiment", "reading a textbook", "doodling in a notebook", "falling asleep in class"],
+                            interaction: ["passing notes in class", "working on a group project", "sharing a lunch at a table", "playing on the swings together", "cheating on a test", "decorating a locker together"],
+                            prop: ["a stack of books", "a giant pencil", "a backpack", "a bubbling beaker", "an apple for the teacher", "a school bus", "a globe", "a paper airplane", "a report card with all A's", "a spitball"]
+                        },
+                        Office: {
+                            outfit: ["business suits", "casual friday outfits", "matching company polos", "smart blouses and skirts", "an intern's oversized suit", "a 'World's Best Boss' t-shirt"],
+                            pose: ["typing on a laptop", "on a video call", "presenting a chart", "looking stressed with paperwork", "sipping coffee", "photocopying their face", "staring blankly at a screen"],
+                            interaction: ["gossiping by the water cooler", "collaborating on a whiteboard", "having a meeting in a conference room", "complaining about the boss", "sharing a box of donuts", "having a swivel chair race"],
+                            prop: ["a laptop", "a briefcase", "a pile of documents", "a coffee mug with a funny slogan", "a headset", "a stapler in jello", "a whiteboard with diagrams", "a water cooler", "a motivational cat poster"]
+                        },
+                        Canteen: {
+                            outfit: ["school uniforms", "casual work clothes", "a lunch lady's apron and hairnet", "a visitor's badge"],
+                            pose: ["carrying a lunch tray", "choosing food from the counter", "complaining about the food", "balancing a tray piled high with food", "trying to open a milk carton"],
+                            interaction: ["sitting at a long table eating together", "trading food items", "starting a food fight", "sharing a dessert", "comparing lunches", "saving a seat for a friend"],
+                            prop: ["a plastic lunch tray", "a carton of milk", "a mysterious casserole", "a vending machine", "a jello cup", "a spork", "a single green bean", "a pile of tater tots"]
+                        },
+                        Cafe: {
+                            outfit: ["a barista's apron", "trendy casual outfits", "cozy sweaters", "a writer's tweed jacket", "a beatnik's turtleneck and beret", "a student's hoodie"],
+                            pose: ["sipping a latte", "working on a laptop", "reading a book", "drawing in a sketchbook", "people-watching out the window", "writing furiously in a journal"],
+                            interaction: ["chatting over coffee", "sharing a dessert", "studying together", "on a coffee date", "co-writing a story on a laptop", "ignoring each other while on their phones"],
+                            prop: ["a steaming cup of coffee with latte art", "a croissant on a plate", "a laptop with stickers", "an open book", "two straws in one milkshake", "a slice of cake", "a sugar dispenser", "a stack of napkins"]
+                        },
+                        Bar: {
+                            outfit: ["a bartender's vest and bowtie", "stylish evening dresses", "cool leather jackets", "casual t-shirts for a dive bar", "a bouncer's all-black outfit", "a musician's band t-shirt"],
+                            pose: ["mixing a colorful cocktail", "leaning against the bar", "playing pool", "singing karaoke badly", "throwing darts", "looking cool and mysterious in a corner"],
+                            interaction: ["laughing with friends at a table", "listening to a live band together", "playing a game of darts", "cheers-ing with drinks", "dancing together", "arm wrestling at a table"],
+                            prop: ["a cocktail shaker", "a glowing neon sign", "a bowl of pretzels", "a pool table with balls", "a microphone on a stand", "a jukebox", "a dartboard", "a fancy-looking cocktail with a tiny umbrella"]
+                        },
+                        Shopping: {
+                            outfit: ["stylish dresses", "matching hoodies", "fancy hats", "trendy jackets", "comfortable walking shoes", "a shirt with a shopping pun"],
+                            pose: ["holding many shopping bags", "pushing a shopping cart", "looking at a price tag with shock", "trying on a hat", "getting lost in a clothing rack", "examining a product closely"],
+                            interaction: ["helping each other pick out outfits", "fighting over the last item on sale", "sharing a giant pretzel in the food court", "getting tangled in clothing racks", "comparing prices on their phones"],
+                            prop: ["colorful shopping bags", "a shopping cart full of groceries", "a designer handbag", "a giant pretzel", "a credit card", "a mannequin", "a '50% OFF' sign", "a long receipt", "a barcode scanner"]
+                        },
+                        Game: {
+                            outfit: ["matching gamer hoodies", "VR headsets", "t-shirts of a favorite game", "esports team jerseys", "cosplay of game characters", "a wizard robe for a tabletop RPG"],
+                            pose: ["holding a game controller", "staring intensely at a screen", "rolling dice for a board game", "rage-quitting", "celebrating a victory", "looking at a strategy guide"],
+                            interaction: ["playing a competitive video game", "co-op gaming on the same couch", "playing a board game together", "high-fiving after a win", "arguing about the rules", "sharing a strategy guide"],
+                            prop: ["glowing game controllers", "gaming headsets", "a D20 die", "a virtual reality landscape", "a stack of board games", "a shared bowl of snacks", "a pizza box", "a character sheet", "a pile of meeples"]
+                        },
+                        CityLife: {
+                            outfit: ["trench coats", "touristy t-shirts", "business suits", "street performer costumes", "messenger bags", "a delivery person's uniform"],
+                            pose: ["waiting for a bus", "hailing a taxi", "looking up at a skyscraper", "eating street food", "taking a photo of a landmark", "looking at a subway map"],
+                            interaction: ["taking a selfie together", "sharing an umbrella in the rain", "navigating with a large map", "watching a street performer together", "chasing pigeons", "getting caught in a crowd"],
+                            prop: ["a subway map", "a yellow taxi cab", "a hot dog from a street vendor", "a skyline of tall buildings", "a shared pair of headphones", "a traffic light", "a flock of pigeons", "a street sign", "a disposable camera"]
+                        },
+                        BeachDay: {
+                            outfit: ["swimsuits", "sunglasses and sun hats", "surfer's rash guards", "flowy beach cover-ups", "a lifeguard's uniform", "a shirt that says 'Beach Bum'"],
+                            pose: ["building a sandcastle", "holding a surfboard", "collecting seashells", "relaxing under an umbrella", "applying sunscreen", "looking for crabs under rocks"],
+                            interaction: ["playing beach volleyball", "building a giant sandcastle together", "burying one person in the sand", "splashing each other in the water", "sharing a beach towel", "having a picnic on a blanket"],
+                            prop: ["a sandcastle", "a surfboard", "a colorful beach umbrella", "a bucket and spade", "a melting popsicle", "a message in a bottle", "a friendly crab", "a beach ball", "a cooler full of drinks", "a pair of flip-flops"]
+                        },
+                        Nature: {
+                            outfit: ["hiker's backpacks and boots", "park ranger uniforms", "flower crowns", "fishing vests", "matching raincoats", "a beekeeper's suit", "a birdwatcher's vest"],
+                            pose: ["sitting on a mushroom", "hugging a tree", "watching butterflies", "fishing in a pond", "identifying a plant with a field guide", "roasting a marshmallow"],
+                            interaction: ["roasting marshmallows over a campfire", "paddling a canoe together", "helping each other climb a small rock", "birdwatching with binoculars", "setting up a tent", "following a trail map together"],
+                            prop: ["a trail map", "a friendly butterfly", "a fishing rod", "a campfire with marshmallows", "a telescope pointing at stars", "a compass", "a canoe with two paddles", "a tent", "a pair of binoculars", "a s'more"]
+                        },
+                        Sports: {
+                            outfit: ["matching basketball jerseys", "soccer uniforms", "tennis outfits", "full baseball uniforms", "karate gis", "a referee uniform", "a figure skating costume"],
+                            pose: ["dribbling a basketball", "kicking a soccer ball", "swinging a tennis racket", "hitting a baseball with a bat", "striking a karate pose", "balancing on a balance beam"],
+                            interaction: ["playing a 1-on-1 basketball game", "passing a soccer ball back and forth", "playing a doubles tennis match", "celebrating a victory together", "competing against each other", "forming a human pyramid"],
+                            prop: ["a basketball hoop", "a soccer goal", "a tennis net", "a baseball glove", "a shiny gold medal", "a large trophy", "a glowing scoreboard", "a referee's whistle", "a foam finger", "a bottle of sports drink"]
+                        },
+                        OnTheRoad: {
+                            outfit: ["race car driver suits", "matching cyclist jerseys and helmets", "motorcyclist leather jackets", "trucker hats", "a road trip t-shirt", "a mechanic's overalls"],
+                            pose: ["driving a convertible with the top down", "happily riding a bicycle down a path", "leaning against a cool motorcycle", "changing a flat tire", "singing along to the radio"],
+                            interaction: ["on a road trip in a van", "racing each other in go-karts", "riding a tandem bicycle", "pushing a broken-down car together", "arguing over a road map", "taking turns driving"],
+                            prop: ["a classic convertible car", "a tandem bicycle", "a vintage scooter", "a monster truck", "a winding road map", "a bright orange traffic cone", "a retro gas pump", "a 'Welcome to...' city sign", "a pair of fuzzy dice", "a pile of luggage"]
+                        },
+                        Fantasy: {
+                            outfit: ["a knight protecting a mage", "elven tunics", "matching fairy petal dresses", "rogue's leather gear", "a king's royal robes", "a witch's pointy hat and robes"],
+                            pose: ["wielding a glowing sword", "casting a magic spell", "riding a griffin", "consulting an ancient map", "polishing armor", "reading from a spellbook"],
+                            interaction: ["fighting a dragon together", "brewing a potion in a large cauldron", "exploring a dungeon as a party", "a knight and a princess holding hands", "two wizards in a magic duel", "bartering with a goblin merchant"],
+                            prop: ["a treasure chest", "an ancient scroll", "a fairy companion", "a bubbling cauldron", "a castle in the background", "a crystal ball", "a powerful staff", "a giant dragon", "a glowing potion bottle", "a mimic disguised as a chest"]
+                        },
+                        SciFi: {
+                            outfit: ["futuristic jumpsuits", "space ranger suits", "alien costumes", "mad scientist lab coats", "a starship captain's uniform", "a cyborg's metallic limbs"],
+                            pose: ["piloting a small spaceship", "holding a laser gun", "interacting with a holographic map", "floating in zero gravity", "analyzing a strange alien artifact", "pressing a big red button"],
+                            interaction: ["co-piloting a spaceship", "fighting back-to-back against aliens", "repairing a friendly droid together", "exploring a strange new planet", "beaming down from a teleporter", "arguing with a ship's AI"],
+                            prop: ["a robot pet", "a UFO in the sky", "a strange, glowing planet", "a holographic interface", "a laser blaster", "a team of friendly aliens", "a portal to another dimension", "a friendly droid", "a test tube with glowing liquid"]
+                        },
+                        Certificate: {
+                            frames: ["a delicate, thin-line filigree border", "a thick, geometric Art Deco frame", "a border of intertwined Celtic knotwork", "a minimalist double-line border", "a frame of realistic, blooming roses", "a whimsical border of stars and moons", "a prestigious border of oak leaves and acorns", "a modern, abstract geometric pattern border", "a hand-drawn, sketchy floral border", "a border made of repeating laurel wreath icons", "an ornate, baroque-style frame with heavy flourishes", "a simple, elegant dotted line border"],
+                            decorations: ["ornate acanthus leaf corner flourishes", "minimalist gold line art in the corners", "subtle, abstract watercolor splashes in the background", "a faint guilloche pattern overlay", "a background of interlocking hexagons", "playful confetti shapes scattered in the background", "a subtle watermark of a lion's head", "elegant Art Nouveau corner decorations", "a starburst pattern radiating from the center", "tiny, decorative fleur-de-lis icons as separators", "a clean, textured paper background", "a background pattern of mathematical equations"],
+                            seals_ribbons: ["a large, official gold foil seal in the bottom center", "a flowing, folded blue ribbon in the top-left corner", "a realistic red wax seal with a custom initial", "a silver embossed medal emblem", "a colorful, striped ribbon banner at the top", "a simple, elegant 'First Place' blue ribbon", "a modern, circular emblem with the year", "a complex, multi-layered ribbon rosette", "no seal, just clean typography", "a small, iconic torch emblem for knowledge", "a heraldic crest representing an institution", "a banner that reads 'Excellence'"]
+                        },
+                        Fonts: {
+                            font_family: ["a clean sans-serif font", "an elegant serif font", "a playful script font", "a bold, slab-serif font", "a futuristic, digital font", "a classic, calligraphic font", "a heavy, blackletter font", "a whimsical, hand-drawn font", "a condensed, tall font", "a wide, extended font", "a monospaced, typewriter font"],
+                            font_style: ["with a heavy, impactful weight", "in a light, airy style", "with a metallic gold texture", "with a glossy, liquid effect", "made of carved stone", "with a neon glow effect", "in a distressed, grunge style", "with a 3D bevel effect", "with a subtle letterpress texture", "filled with a colorful gradient", "with a clean, minimalist outline"],
+                            decorations: ["adorned with floral flourishes", "surrounded by geometric shapes", "with flowing, elegant swashes", "entwined with thorny vines", "with sparks and stars coming off it", "encased in a block of ice", "with dripping, liquid paint details", "integrated with mechanical gears and cogs", "with a long, dramatic shadow", "with birds flying around it", "wreathed in flames"]
+                        }
+                    }
+                };
+
+                // --- DOM ELEMENTS ---
+                const characterInput = document.getElementById('character-input');
+                const characterLabel = document.getElementById('character-label');
+                const themeSelect = document.getElementById('theme-select');
+                const themeSelectorWrapper = document.getElementById('theme-selector-wrapper');
+                const styleSelect = document.getElementById('style-select');
                 const generateBtn = document.getElementById('generate-btn');
                 const shuffleBtn = document.getElementById('shuffle-btn');
                 const shuffleStyleBtn = document.getElementById('shuffle-style-btn');
+                const promptOutput = document.getElementById('prompt-output');
                 const copyBtn = document.getElementById('copy-btn');
                 const usePromptBtn = document.getElementById('use-prompt-btn');
-                const promptOutput = document.getElementById('prompt-output');
-                const themeSelect = document.getElementById('theme-select');
-                const styleSelect = document.getElementById('style-select');
-                const customStyleInput = document.getElementById('custom-style-input');
-                const characterInput = document.getElementById('character-input');
                 const promptTypeRadios = document.querySelectorAll('input[name="prompt-type"]');
-                
-                const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
-                
-                function generatePrompt() {
-                    const themeKey = themeSelect.value;
-                    const selectedTheme = prompts.themes[themeKey] || {};
-                    const promptType = document.querySelector('input[name="prompt-type"]:checked').value;
-                    let characterPart;
-                    if (characterInput.value.trim() !== "") {
-                        characterPart = characterInput.value.trim();
-                    } else {
-                        if (promptType === 'single') {
-                            characterPart = `${getRandom(prompts.character)} with ${getRandom(prompts.facialExpression)}`;
+                const customStyleInput = document.getElementById('custom-style-input');
+
+
+                let lastSubject = '';
+                let lastFullPrompt = '';
+
+                // --- FUNCTIONS ---
+                function getRandomElement(arr) {
+                    return arr[Math.floor(Math.random() * arr.length)];
+                }
+
+                function generatePrompt(isShuffle = false) {
+                    const promptMode = document.querySelector('input[name="prompt-type"]:checked').value;
+                    
+                    let fullPrompt = '';
+                    const styleEnding = customStyleInput.value.trim();
+
+                    if (promptMode === 'certificate') {
+                        const themeData = prompts.themes.Certificate;
+                        
+                        const frame = getRandomElement(themeData.frames);
+                        const decoration = getRandomElement(themeData.decorations);
+                        const sealRibbon = getRandomElement(themeData.seals_ribbons);
+                        
+                        fullPrompt = `A collection of decorative elements for a certificate, featuring: ${frame}, ${decoration}, and ${sealRibbon}. All elements are isolated on a plain white background for easy selection and chroma keying. ${styleEnding}`;
+
+                    } else if (promptMode === 'font') {
+                        const themeData = prompts.themes.Fonts;
+                        const customText = characterInput.value.trim();
+
+                        let text = '';
+                        if (isShuffle) {
+                            text = customText || lastSubject;
                         } else {
-                            characterPart = `${getRandom(prompts.character)} and ${getRandom(prompts.character)}`;
+                            text = customText || "Typography";
+                            if (!customText) {
+                                lastSubject = text;
+                            }
+                        }
+
+                        const fontFamily = getRandomElement(themeData.font_family);
+                        const fontStyle = getRandomElement(themeData.font_style);
+                        const fontDecoration = getRandomElement(themeData.decorations);
+                        
+                        fullPrompt = `Typography design for the text '${text}', featuring ${fontFamily}, ${fontStyle}, ${fontDecoration}. All elements isolated on a plain white background for easy cutout. ${styleEnding}`;
+
+
+                    } else { // Handle Single and Group modes
+                        const selectedTheme = themeSelect.value;
+                        const themeData = prompts.themes[selectedTheme];
+                        const customCharacter = characterInput.value.trim();
+                        
+                        const expression = getRandomElement(prompts.facialExpression);
+                        const outfit = getRandomElement(themeData.outfit);
+                        const prop = getRandomElement(themeData.prop);
+                        
+                        let character = '';
+                        let action = '';
+
+                         if (isShuffle) {
+                            character = customCharacter || lastSubject;
+                        } else {
+                            if (promptMode === 'group') {
+                                character = customCharacter || (getRandomElement(prompts.character) + ' and ' + getRandomElement(prompts.character));
+                            } else {
+                                character = customCharacter || getRandomElement(prompts.character);
+                            }
+                            if (!customCharacter) {
+                                lastSubject = character;
+                            }
+                        }
+                        
+                        if (promptMode === 'group') {
+                            action = getRandomElement(themeData.interaction);
+                        } else {
+                            action = getRandomElement(themeData.pose);
+                        }
+                        fullPrompt = `Chibi ${character} with ${expression}, in ${outfit}, ${action}, ${prop}, ${styleEnding}`;
+                    }
+
+                    promptOutput.textContent = fullPrompt;
+                    lastFullPrompt = fullPrompt;
+                }
+
+                function generateStyle() {
+                    const styleKeys = Object.keys(prompts.promptStyles);
+                    const randomStyleKey = getRandomElement(styleKeys);
+                    styleSelect.value = randomStyleKey;
+                    updateStyleEditor();
+                    generatePrompt(true); // Re-generate with the new style immediately
+                }
+                
+                function copyPrompt() {
+                    const textToCopy = promptOutput.textContent;
+                    const textArea = document.createElement('textarea');
+                    textArea.value = textToCopy;
+                    textArea.style.top = "0";
+                    textArea.style.left = "0";
+                    textArea.style.position = 'fixed';
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    try {
+                        const successful = document.execCommand('copy');
+                        if (successful) {
+                            showCopyFeedback();
+                        }
+                    } catch (err) {
+                        console.error('Fallback: Oops, unable to copy', err);
+                    }
+                    document.body.removeChild(textArea);
+                }
+                
+                function showCopyFeedback() {
+                    const originalText = copyBtn.textContent;
+                    copyBtn.textContent = 'Copied!';
+                    copyBtn.classList.add('bg-green-500');
+                    setTimeout(() => {
+                        copyBtn.textContent = originalText;
+                        copyBtn.classList.remove('bg-green-500');
+                    }, 2000);
+                }
+                
+                function updateUIMode() {
+                    const promptMode = document.querySelector('input[name="prompt-type"]:checked').value;
+
+                    if (promptMode === 'certificate') {
+                        themeSelectorWrapper.style.display = 'none';
+                        characterLabel.style.display = 'none';
+                        characterInput.style.display = 'none';
+                        const currentStyle = styleSelect.value;
+                        if (!currentStyle.startsWith('certificate_')) {
+                            styleSelect.value = 'certificate_classic';
+                        }
+                    } else if (promptMode === 'font') {
+                        themeSelectorWrapper.style.display = 'none';
+                        characterLabel.style.display = 'block';
+                        characterInput.style.display = 'block';
+                        characterLabel.textContent = 'CUSTOM TEXT (OPTIONAL)';
+                        characterInput.placeholder = "e.g., 'Hello World', 'Victory'";
+                        const currentStyle = styleSelect.value;
+                        if (!currentStyle.startsWith('font_')) {
+                            styleSelect.value = 'font_vintage';
+                        }
+                    } else {
+                        themeSelectorWrapper.style.display = 'block';
+                        characterLabel.style.display = 'block';
+                        characterInput.style.display = 'block';
+                        characterLabel.textContent = 'CUSTOM SUBJECT (OPTIONAL)';
+                        if (styleSelect.value.startsWith('certificate_') || styleSelect.value.startsWith('font_')) {
+                            styleSelect.value = 'sticker';
+                        }
+                        if (promptMode === 'group') {
+                            characterInput.placeholder = "e.g., 'two friendly robots', 'a cat and a dog'";
+                        } else {
+                            characterInput.placeholder = "e.g., 'a smiling red panda', 'my OC Luna'";
                         }
                     }
-                    const actionPart = (promptType === 'single' ? getRandom(selectedTheme.pose) : getRandom(selectedTheme.interaction)) || "in a dynamic pose";
-                    const outfitPart = getRandom(selectedTheme.outfit) || "wearing stylish clothes";
-                    const propPart = getRandom(selectedTheme.prop) || "holding an interesting item";
-                    const stylePart = customStyleInput.value;
-                    const fullPrompt = `${characterPart}, ${actionPart}, wearing ${outfitPart}, with ${propPart}, ${stylePart}`;
-                    promptOutput.textContent = fullPrompt;
-                }
-                function updateCustomStyleInput() {
-                    const selectedStyleKey = styleSelect.value;
-                    if (selectedStyleKey === 'custom') {
-                        customStyleInput.placeholder = "Write your own custom style prompt here...";
-                    } else {
-                        customStyleInput.value = prompts.promptStyles[selectedStyleKey];
-                    }
+                    updateStyleEditor();
                 }
                 
-                generateBtn.addEventListener('click', generatePrompt);
-                shuffleBtn.addEventListener('click', () => {
-                     const keys = Object.keys(prompts.themes);
-                     themeSelect.value = getRandom(keys);
-                     generatePrompt();
-                });
-                shuffleStyleBtn.addEventListener('click', () => {
-                     const keys = Object.keys(prompts.promptStyles);
-                     styleSelect.value = getRandom(keys);
-                     updateCustomStyleInput();
-                     generatePrompt();
-                });
-                styleSelect.addEventListener('change', updateCustomStyleInput);
-                copyBtn.addEventListener('click', () => {
-                    navigator.clipboard.writeText(promptOutput.textContent).then(() => {
-                        uiManager.showToast('Prompt copied to clipboard!');
-                    }).catch(err => {
-                        console.error('Failed to copy: ', err);
-                        uiManager.showToast('Failed to copy prompt.');
-                    });
-                });
-                 usePromptBtn.addEventListener('click', () => {
+                function updateStyleEditor() {
+                    const selectedStyleValue = styleSelect.value;
+                    if (selectedStyleValue !== 'custom') {
+                        customStyleInput.value = prompts.promptStyles[selectedStyleValue] || '';
+                    }
+                }
+
+                // --- EVENT LISTENERS ---
+                generateBtn.addEventListener('click', () => generatePrompt(false));
+                shuffleBtn.addEventListener('click', () => generatePrompt(true));
+                shuffleStyleBtn.addEventListener('click', generateStyle);
+                copyBtn.addEventListener('click', copyPrompt);
+                
+                usePromptBtn.addEventListener('click', () => {
                     const promptText = promptOutput.textContent;
-                    if (promptText && promptText.trim().length > 0 && promptText !== "Click the dice to generate a prompt!") {
+                    if (promptText && promptText.trim().length > 0 && lastFullPrompt) {
                         document.getElementById('aiImagePrompt').value = promptText;
                         document.getElementById('aiImageModal').style.display = 'flex';
                         promptGeneratorPopup.style.display = 'none';
@@ -2678,8 +3082,22 @@
                     }
                 });
 
-                updateCustomStyleInput();
-                promptOutput.textContent = 'Click the dice to generate a prompt!';
+                promptTypeRadios.forEach(radio => {
+                    radio.addEventListener('change', () => {
+                        updateUIMode();
+                        generatePrompt(false); // Generate a new prompt when mode changes
+                    });
+                });
+                styleSelect.addEventListener('change', () => {
+                    updateStyleEditor();
+                    generatePrompt(true); // Regenerate with new style
+                });
+
+
+                // --- INITIALIZATION ---
+                updateStyleEditor();
+                updateUIMode();
+                generatePrompt(false);
             }
 
             initPromptGenerator();
@@ -2687,3 +3105,4 @@
     </script>
 </body>
 </html>
+
