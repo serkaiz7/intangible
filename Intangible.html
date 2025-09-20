@@ -289,6 +289,23 @@
         .slider-container { display: flex; align-items: center; gap: 8px; }
         .adjust-btn { width: 28px; height: 28px; border: 1px solid var(--border-light); background-color: var(--bg-light); border-radius: 4px; font-weight: bold; cursor: pointer; }
 
+        #closePropertiesBtn {
+            position: absolute;
+            top: 10px;
+            left: -22px; /* Half of its width, to make it stick out */
+            z-index: 999;
+            width: 44px;
+            height: 44px;
+            border-radius: 50% 0 0 50%;
+            border-right: none;
+            display: none; /* Hidden by default */
+            padding-right: 4px; /* Adjust padding for icon alignment */
+            box-shadow: -2px 2px 8px var(--shadow-color);
+        }
+        #propertiesSidebar.visible #closePropertiesBtn {
+            display: flex;
+        }
+
         /* Floating Image Toolbar */
         .image-toolbar {
             position: absolute;
@@ -608,6 +625,109 @@
         .prompt-gen-body #copy-btn:hover { background-color: #0284c7; color: white; }
         .prompt-gen-body #use-prompt-btn { position: absolute; bottom: 0.5rem; right: 0.5rem; background-color: rgba(51, 65, 85, 0.5); font-size: 0.875rem; border-radius: 0.375rem; padding: 0.25rem 0.75rem; color: #f472b6; }
         .prompt-gen-body #use-prompt-btn:hover { background-color: #db2777; color: white; }
+    
+        /* Mobile-Specific Controls */
+        #mobile-controls-toolbar {
+            display: none; /* Hidden by default */
+            position: fixed;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--surface-light);
+            border-radius: 16px;
+            box-shadow: 0 5px 20px var(--shadow-color);
+            padding: 8px;
+            z-index: 1001;
+            gap: 8px;
+            align-items: center;
+            border: 1px solid var(--border-light);
+        }
+
+        #mobile-controls-toolbar .control-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 8px;
+        }
+        #mobile-controls-toolbar input[type="range"] {
+            width: 80px;
+        }
+        #mobile-controls-toolbar .zoom-btn {
+            width: 36px;
+            height: 36px;
+            font-size: 22px;
+        }
+        #mobile-controls-toolbar svg {
+             width: 24px;
+             height: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .top-controls {
+                display: none;
+            }
+            #mobile-controls-toolbar {
+                display: flex;
+            }
+            #prompt-drawer-toggle {
+                display: none !important; /* Hide the floating button, we'll use one in the toolbar */
+            }
+            .canvas-area {
+                padding: 20px 10px 100px 10px; /* Add bottom padding for the toolbar */
+            }
+            .tabs-container {
+                padding: 0;
+            }
+            #backToHomeBtn {
+                padding-right: 8px;
+                margin-right: 0;
+            }
+            .ui-container {
+                flex-direction: column;
+                top: 52px;
+                right: 10px;
+            }
+            
+            /* Slide-over sidebars on mobile */
+            .sidebar,
+            #propertiesSidebar {
+                position: fixed;
+                height: calc(100% - 42px);
+                top: 42px;
+                z-index: 1000;
+                box-shadow: 0 0 25px var(--shadow-color);
+                width: 80vw; /* Reduced width */
+                max-width: 290px; /* Reduced max-width */
+                
+                /* Glassmorphism effect for better context */
+                background: rgba(255, 255, 255, 0.65);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+            }
+
+            body.dark .sidebar,
+            body.dark #propertiesSidebar {
+                 background: rgba(30, 30, 30, 0.65);
+            }
+
+            #propertiesSidebar {
+                right: 0;
+                transform: translateX(100%);
+                transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            }
+            
+            #propertiesSidebar.visible {
+                transform: translateX(0);
+            }
+
+            body.sidebar-visible .ui-container {
+                right: 10px; /* Keep it on the side even if sidebar is open */
+            }
+             /* Make floating toolbar more compact */
+            .image-toolbar {
+                transform: translate(-50%, -110%);
+            }
+        }
     </style>
 </head>
 <body>
@@ -657,6 +777,9 @@
                 <div id="container"></div>
             </div>
             <div id="propertiesSidebar">
+                <button id="closePropertiesBtn" class="ui-button" title="Close Properties">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg>
+                </button>
                 <div id="sidebarPlaceholder">Select an item to see its properties.</div>
                 <div class="menu-tabs">
                     <div class="menu-tab active" data-tab="transform">Transform</div>
@@ -755,6 +878,23 @@
             <button id="centerViewBtn" class="ui-button" title="Center View"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><circle cx="12" cy="12" r="3"/></svg></button>
             <button id="fullscreenToggleBtn" class="ui-button" title="Toggle Fullscreen"><svg id="maximizeIcon" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg><svg id="minimizeIcon" style="display: none;" viewBox="0 0 24 24"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path></svg></button>
             <button id="themeToggle" class="ui-button" title="Toggle Theme"><svg id="themeIconSun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg><svg id="themeIconMoon" style="display: none;" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
+        </div>
+        <div id="mobile-controls-toolbar">
+            <div class="control-wrapper">
+                <button id="mobileZoomOutBtn" class="zoom-btn" title="Zoom Out">-</button>
+                <input type="range" id="mobileZoomSlider" min="0.1" max="5" value="1" step="0.01">
+                <button id="mobileZoomInBtn" class="zoom-btn" title="Zoom In">+</button>
+                <span id="mobileZoomValue">100%</span>
+            </div>
+            <div class="control-wrapper">
+                <button id="mobileRotationOutBtn" class="zoom-btn" title="Rotate Left">-</button>
+                <input type="range" id="mobileRotationSlider" min="-180" max="180" value="0" step="1">
+                <button id="mobileRotationInBtn" class="zoom-btn" title="Rotate Right">+</button>
+                <span id="mobileRotationValue">0°</span>
+            </div>
+            <button id="mobile-prompt-btn" class="ui-button" title="AI Prompt Generator">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path><path d="m15 5 3 3"></path></svg>
+            </button>
         </div>
     </div>
     
@@ -971,107 +1111,97 @@
             }
 
             const canvasPresets = {
-                'printing_formats': {
-                    name: 'Printing Formats',
+                'documents_print': {
+                    name: 'Documents & Print',
                     presets: [
-                        { name: 'A0 Poster', w_cm: 84.1, h_cm: 118.9, w_in: 33.1, h_in: 46.8 },
-                        { name: 'A1 Poster', w_cm: 59.4, h_cm: 84.1, w_in: 23.4, h_in: 33.1 },
-                        { name: 'A2 Poster', w_cm: 42, h_cm: 59.4, w_in: 16.5, h_in: 23.4 },
-                        { name: 'A3 Document/Poster', w_cm: 29.7, h_cm: 42, w_in: 11.7, h_in: 16.5 },
-                        { name: 'A4 Document', w_cm: 21, h_cm: 29.7, w_in: 8.3, h_in: 11.7 },
-                        { name: 'A5 Document', w_cm: 14.8, h_cm: 21, w_in: 5.8, h_in: 8.3 },
-                        { name: 'A6 Document/Postcard', w_cm: 10.5, h_cm: 14.8, w_in: 4.1, h_in: 5.8 },
-                        { name: 'Letter Document', w_cm: 21.6, h_cm: 27.9, w_in: 8.5, h_in: 11 },
-                        { name: 'Legal Document', w_cm: 21.6, h_cm: 35.6, w_in: 8.5, h_in: 14 },
-                        { name: 'Tabloid/Ledger', w_cm: 27.9, h_cm: 43.2, w_in: 11, h_in: 17 },
-                        { name: 'Half Letter', w_cm: 14, h_cm: 21.6, w_in: 5.5, h_in: 8.5 },
-                        { name: 'Business Card', w_cm: 8.9, h_cm: 5.1, w_in: 3.5, h_in: 2 },
-                        { name: 'Postcard', w_cm: 10.2, h_cm: 15.2, w_in: 4, h_in: 6 },
-                        { name: 'Invitation Card', w_cm: 12.7, h_cm: 17.8, w_in: 5, h_in: 7 },
-                        { name: 'Greeting Card', w_cm: 17.8, h_cm: 12.7, w_in: 7, h_in: 5 },
-                        { name: 'Brochure (Tri-fold)', w_cm: 21.6, h_cm: 27.9, w_in: 8.5, h_in: 11 },
-                        { name: 'Flyer (US)', w_cm: 21.6, h_cm: 27.9, w_in: 8.5, h_in: 11 },
-                        { name: 'Flyer (ISO)', w_cm: 21, h_cm: 29.7, w_in: 8.3, h_in: 11.7 },
-                        { name: 'Menu', w_cm: 21, h_cm: 29.7, w_in: 8.3, h_in: 11.7, note: "A4, A3, or Tabloid" },
-                        { name: 'Certificate', w_cm: 21, h_cm: 29.7, w_in: 8.3, h_in: 11.7, note: "A4 or Letter" },
-                        { name: 'Calendar', w_cm: 21, h_cm: 29.7, w_in: 8.3, h_in: 11.7, note: "A4, A3, or Tabloid" },
-                        { name: 'Bookmark', w_cm: 5, h_cm: 15, w_in: 2, h_in: 6 },
-                        { name: 'Ticket', w_cm: 21.6, h_cm: 7, w_in: 8.5, h_in: 2.75 },
-                        { name: 'CD/DVD Cover', w_cm: 12, h_cm: 12, w_in: 4.724, h_in: 4.724 },
-                        { name: 'Book Cover (Standard)', w_cm: 15.2, h_cm: 22.9, w_in: 6, h_in: 9 },
-                        { name: 'Resume/CV', w_cm: 21, h_cm: 29.7, w_in: 8.3, h_in: 11.7, note: "A4 or Letter" },
-                        { name: 'Recipe Card', w_px: 800, h_px: 1200 },
-                        { name: 'Magazine Cover', w_cm: 21, h_cm: 29.7, w_in: 8.3, h_in: 11.7 },
-                        { name: 'Yearbook', w_cm: 21.6, h_cm: 27.9, w_in: 8.5, h_in: 11, note: "A4 or Letter" },
-                        { name: 'Wedding Invitation', w_cm: 12.7, h_cm: 17.8, w_in: 5, h_in: 7 },
+                        { name: 'US Letter', w_in: 8.5, h_in: 11 },
+                        { name: 'A4 Document', w_cm: 21.0, h_cm: 29.7 },
+                        { name: 'Business Card', w_in: 3.5, h_in: 2 },
+                        { name: 'Flyer', w_in: 8.5, h_in: 11, note: "US Letter" },
+                        { name: 'Wedding Invitation', w_in: 5, h_in: 7 },
+                        { name: 'Poster', w_cm: 29.7, h_cm: 42, note: "A3, A2, etc." },
                     ]
                 },
-                'stickers': {
-                    name: 'Stickers',
+                'stickers_decals': {
+                    name: 'Stickers & Decals',
                     presets: [
-                        { name: 'Round Sticker', w_in: 2, h_in: 2, note: "1-4 in diameter" },
-                        { name: 'Square Sticker', w_in: 3, h_in: 3, note: "2x2, 3x3, 4x4 in" },
-                        { name: 'Rectangle Sticker', w_in: 3, h_in: 2, note: "2x3, 3x4, 4x6 in" },
-                        { name: 'Oval Sticker', w_in: 3, h_in: 2, note: "1.5x2.5, 2x3, 3x4 in" },
-                        { name: 'Die-cut Sticker', w_in: 4, h_in: 4, note: "Custom size" },
-                        { name: 'Sticker Sheet', w_in: 8.5, h_in: 11, note: "Letter or A4" },
+                        { name: 'Round Sticker', w_in: 3, h_in: 3, note: "Common size" },
+                        { name: 'Square Sticker', w_in: 3, h_in: 3, note: "Common size" },
+                        { name: 'Rectangle Sticker', w_in: 4, h_in: 2, note: "Common size" },
+                        { name: 'Oval Sticker', w_in: 3, h_in: 2, note: "Common size" },
+                        { name: 'Die-Cut Sticker', w_in: 4, h_in: 4, note: "For custom shapes" },
+                        { name: 'Phone Decal', w_in: 2, h_in: 2, note: "For back of phone" },
+                        { name: 'Water Bottle Sticker', w_in: 3, h_in: 3.5, note: "Vinyl, waterproof" },
+                        { name: 'Bumper Sticker', w_in: 11.5, h_in: 3, note: "For cars" },
+                        { name: 'Car Window Decal', w_in: 6, h_in: 6, note: "Vinyl decal" },
+                        { name: 'Social Media Handle', w_in: 8, h_in: 1.5, note: "For car windows" },
+                        { name: 'Windshield Banner', w_in: 36, h_in: 4, note: "Sunstrip" },
+                        { name: 'Motorcycle Helmet Decal', w_in: 2.5, h_in: 2.5, note: "Small & curved fit" },
+                        { name: 'Motorcycle Tank Decal', w_in: 6, h_in: 3, note: "Side fairings" },
+                        { name: 'Skateboard Graphic', w_in: 8, h_in: 8, note: "Center deck art" },
+                        { name: 'Small Sticker Sheet', w_in: 4, h_in: 6, note: "For planners" },
+                        { name: 'Sticker Sheet', w_in: 8.5, h_in: 11, note: "US Letter size" },
                     ]
                 },
-                'print_on_demand': {
-                    name: 'Print-on-Demand & Tarpaulin',
+                'pod_products': {
+                    name: 'Apparel & Products',
                     presets: [
-                        { name: 'Mug (Wrap Design)', w_px: 2550, h_px: 900 },
-                        { name: 'Mug (Single Side)', w_in: 3, h_in: 3 },
-                        { name: 'T-shirt Design (Front)', w_px: 3600, h_px: 4800 },
+                        { name: 'T-shirt Design', w_px: 3600, h_px: 4800, note: "Front print area" },
+                        { name: 'Hoodie (Back Design)', w_in: 14, h_in: 16 },
+                        { name: 'Hoodie (Chest Logo)', w_in: 4, h_in: 4, note: "Left chest" },
+                        { name: 'Cap (Front Design)', w_in: 4.5, h_in: 2.25, note: "For hats & caps" },
+                        { name: 'Baby Onesie Design', w_in: 5, h_in: 5 },
+                        { name: 'Mug Design', w_px: 2550, h_px: 900, note: "Wrap-around" },
+                        { name: 'Tumbler (Wrap Design)', w_in: 9.3, h_in: 8.2, note: "20oz skinny" },
                         { name: 'Tote Bag', w_px: 4200, h_px: 4800 },
-                        { name: 'Pillow/Cushion Cover', w_px: 5400, h_px: 5400 },
+                        { name: 'Pillow Cover', w_px: 5400, h_px: 5400 },
                         { name: 'Notebook Cover', w_in: 6, h_in: 9 },
-                        { name: 'Phone Case', w_px: 900, h_px: 1800, note: "Varies" },
-                        { name: 'Canvas Print (Wall Art)', w_in: 12, h_in: 16, note: "8x10, 12x16, etc." },
-                        { name: 'Poster Print (Premium)', w_cm: 29.7, h_cm: 42, note: "A3, A2, etc." },
-                        { name: 'Tarpaulin: 2 ft × 3 ft', w_in: 24, h_in: 36, w_px: 7200, h_px: 10800 },
-                        { name: 'Tarpaulin: 3 ft × 4 ft', w_in: 36, h_in: 48, w_px: 10800, h_px: 14400 },
-                        { name: 'Tarpaulin: 3 ft × 6 ft', w_in: 36, h_in: 72, w_px: 10800, h_px: 21600 },
-                        { name: 'Tarpaulin: 4 ft × 8 ft', w_in: 48, h_in: 96, w_px: 14400, h_px: 28800 },
-                        { name: 'Tarpaulin: 6 ft × 9 ft', w_in: 72, h_in: 108, w_px: 21600, h_px: 32400 },
-                        { name: 'Tarpaulin: 6 ft × 12 ft', w_in: 72, h_in: 144, w_px: 21600, h_px: 43200 },
-                        { name: 'Tarpaulin: 8 ft × 12 ft', w_in: 96, h_in: 144, w_px: 28800, h_px: 43200 },
-                        { name: 'Tarpaulin: 10 ft × 20 ft', w_in: 120, h_in: 240, w_px: 36000, h_px: 72000 },
+                        { name: 'Phone Case', w_px: 900, h_px: 1800, note: "Varies by model" },
+                        { name: 'Phone Grip', w_in: 1.5, h_in: 1.5, note: "Circular design" },
+                        { name: 'Keychain', w_in: 2, h_in: 2, note: "Acrylic or plastic" },
+                        { name: 'Coaster', w_in: 4, h_in: 4 },
+                        { name: 'Mouse Pad', w_in: 9.25, h_in: 7.75 },
+                        { name: 'Pet Bandana', w_in: 7, h_in: 5, note: "Design area" },
+                        { name: 'Puzzle (252 pc)', w_in: 13.5, h_in: 10.5 },
+                        { name: 'Canvas Print', w_in: 12, h_in: 16, note: "Common wall art size" },
                     ]
                 },
-                'digital_social_media': {
-                    name: 'Digital & Social Media',
+                'social_media_posts': {
+                    name: 'Social Media Posts',
                     presets: [
-                        { name: 'Logo', w_px: 500, h_px: 500 },
                         { name: 'Instagram Post', w_px: 1080, h_px: 1080 },
                         { name: 'Instagram Story', w_px: 1080, h_px: 1920 },
                         { name: 'Facebook Post', w_px: 1200, h_px: 630 },
-                        { name: 'Facebook Cover', w_px: 820, h_px: 312 },
-                        { name: 'Facebook Event Cover', w_px: 1920, h_px: 1080 },
                         { name: 'Pinterest Pin', w_px: 1000, h_px: 1500 },
                         { name: 'LinkedIn Post', w_px: 1200, h_px: 1200 },
-                        { name: 'LinkedIn Banner', w_px: 1584, h_px: 396 },
                         { name: 'Twitter Post (X)', w_px: 1200, h_px: 675 },
+                    ]
+                },
+                'social_media_covers': {
+                    name: 'Covers & Headers',
+                    presets: [
+                        { name: 'Facebook Cover', w_px: 820, h_px: 312 },
+                        { name: 'Facebook Event Cover', w_px: 1920, h_px: 1080 },
+                        { name: 'LinkedIn Banner', w_px: 1584, h_px: 396 },
                         { name: 'Twitter Header (X)', w_px: 1500, h_px: 500 },
                         { name: 'YouTube Thumbnail', w_px: 1280, h_px: 720 },
                         { name: 'YouTube Channel Art', w_px: 2560, h_px: 1440 },
                         { name: 'Podcast Cover', w_px: 3000, h_px: 3000 },
                         { name: 'Blog Banner', w_px: 1200, h_px: 628 },
                         { name: 'Email Header', w_px: 600, h_px: 200 },
-                        { name: 'Desktop Wallpaper', w_px: 1920, h_px: 1080 },
-                        { name: 'Mobile Wallpaper', w_px: 1080, h_px: 1920 },
-                        { name: 'Infographic', w_px: 800, h_px: 2000 },
                     ]
                 },
-                'hd_screens': {
-                    name: 'HD & Higher Quality Screens',
+                'digital_display': {
+                    name: 'Digital Display & Video',
                     presets: [
-                        { name: 'HD (720p)', w_px: 1280, h_px: 720 },
-                        { name: 'Full HD (1080p)', w_px: 1920, h_px: 1080 },
-                        { name: '2K', w_px: 2560, h_px: 1440 },
-                        { name: '4K Ultra HD', w_px: 3840, h_px: 2160 },
-                        { name: '5K', w_px: 5120, h_px: 2880 },
-                        { name: '8K Ultra HD', w_px: 7680, h_px: 4320 },
+                        { name: 'Logo', w_px: 500, h_px: 500 },
+                        { name: 'Infographic', w_px: 800, h_px: 2000 },
+                        { name: 'Desktop Wallpaper', w_px: 1920, h_px: 1080 },
+                        { name: 'Mobile Wallpaper', w_px: 1080, h_px: 1920 },
+                        { name: 'HD Video (720p)', w_px: 1280, h_px: 720 },
+                        { name: 'Full HD Video (1080p)', w_px: 1920, h_px: 1080 },
+                        { name: '2K QHD Display', w_px: 2560, h_px: 1440 },
+                        { name: '4K UHD Display', w_px: 3840, h_px: 2160 },
                     ]
                 }
             };
@@ -2331,6 +2461,15 @@
                     document.getElementById('rotationSlider').addEventListener('input', (e) => this.cm.setRotation(parseInt(e.target.value, 10)));
                     document.getElementById('rotationInBtn').addEventListener('click', () => this.cm.rotateByStep(1));
                     document.getElementById('rotationOutBtn').addEventListener('click', () => this.cm.rotateByStep(-1));
+                    
+                    // Add listeners for mobile controls
+                    document.getElementById('mobileZoomSlider').addEventListener('input', (e) => this.cm.setZoom(parseFloat(e.target.value)));
+                    document.getElementById('mobileZoomInBtn').addEventListener('click', () => this.cm.zoomByStep(1));
+                    document.getElementById('mobileZoomOutBtn').addEventListener('click', () => this.cm.zoomByStep(-1));
+                    document.getElementById('mobileRotationSlider').addEventListener('input', (e) => this.cm.setRotation(parseInt(e.target.value, 10)));
+                    document.getElementById('mobileRotationInBtn').addEventListener('click', () => this.cm.rotateByStep(1));
+                    document.getElementById('mobileRotationOutBtn').addEventListener('click', () => this.cm.rotateByStep(-1));
+                    
                     document.getElementById('canvas-area').addEventListener('click', () => { if (this.sidebar.classList.contains('open')) { this.sidebar.classList.remove('open'); }});
                     document.getElementById('saveProjectBtn').addEventListener('click', () => this.saveProject());
                     document.getElementById('loadProjectBtn').addEventListener('click', () => document.getElementById('loadProjectInput').click());
@@ -2341,6 +2480,17 @@
                     document.getElementById('previewBtn').addEventListener('click', () => { document.getElementById('previewModal').style.display = 'flex'; document.getElementById('previewImage').src = this.cm.getPreviewDataURL(); });
                     document.getElementById('exportPngBtn').addEventListener('click', () => this.cm.exportToPNG());
                     document.getElementById('exportPdfBtn').addEventListener('click', () => this.cm.exportToPDF());
+
+                    document.getElementById('closePropertiesBtn').addEventListener('click', () => {
+                        this.hidePropertiesSidebar();
+                        if (this.cm) {
+                            this.cm.tr.nodes([]);
+                            this.cm.selectedNodes = [];
+                            this.cm._destroyFloatingToolbar();
+                            this.cm._destroyControls();
+                            this.cm.layer.draw();
+                        }
+                    });
                 }
                 
                 renderTabs() {
@@ -2431,8 +2581,19 @@
                 }
 
                 toggleSidebar() { this.sidebar.classList.toggle('open'); }
-                updateZoomSlider(scale) { document.getElementById('zoomSlider').value = scale; document.getElementById('zoomValue').textContent = `${Math.round(scale * 100)}%`; }
-                updateRotationSlider(deg) { const roundedDeg = Math.round(deg); document.getElementById('rotationSlider').value = roundedDeg; document.getElementById('rotationValue').textContent = `${roundedDeg}°`; }
+                updateZoomSlider(scale) { 
+                    document.getElementById('zoomSlider').value = scale; 
+                    document.getElementById('zoomValue').textContent = `${Math.round(scale * 100)}%`; 
+                    document.getElementById('mobileZoomSlider').value = scale;
+                    document.getElementById('mobileZoomValue').textContent = `${Math.round(scale * 100)}%`;
+                }
+                updateRotationSlider(deg) { 
+                    const roundedDeg = Math.round(deg); 
+                    document.getElementById('rotationSlider').value = roundedDeg; 
+                    document.getElementById('rotationValue').textContent = `${roundedDeg}°`; 
+                    document.getElementById('mobileRotationSlider').value = roundedDeg;
+                    document.getElementById('mobileRotationValue').textContent = `${roundedDeg}°`;
+                }
                 updateUndoRedoButtons() {
                     document.getElementById('undoBtn').disabled = this.cm.historyStep <= 0;
                     document.getElementById('redoBtn').disabled = this.cm.historyStep >= this.cm.history.length - 1;
@@ -2683,11 +2844,17 @@
             const promptGeneratorPopup = document.getElementById('prompt-generator-popup');
             const promptDrawerToggle = document.getElementById('prompt-drawer-toggle');
             const closePromptGenerator = document.getElementById('close-prompt-generator');
+            const mobilePromptBtn = document.getElementById('mobile-prompt-btn');
+
+            const openPromptGenerator = () => {
+                promptGeneratorPopup.style.display = 'flex';
+            };
 
             if (promptDrawerToggle) {
-                promptDrawerToggle.addEventListener('click', () => {
-                    promptGeneratorPopup.style.display = 'flex';
-                });
+                promptDrawerToggle.addEventListener('click', openPromptGenerator);
+            }
+            if (mobilePromptBtn) {
+                mobilePromptBtn.addEventListener('click', openPromptGenerator);
             }
             if (closePromptGenerator) {
                 closePromptGenerator.addEventListener('click', () => {
@@ -3105,4 +3272,3 @@
     </script>
 </body>
 </html>
-
